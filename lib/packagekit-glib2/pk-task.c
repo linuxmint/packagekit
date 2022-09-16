@@ -229,6 +229,16 @@ pk_task_do_async_action (PkTaskState *state)
 						 state->progress_callback,
 						 state->progress_user_data,
 						 (GAsyncReadyCallback) pk_task_ready_cb, state);
+    } else if (state->role == PK_ROLE_ENUM_PURGE_PACKAGES) {
+        pk_client_purge_packages_async (PK_CLIENT(state->task),
+                         transaction_flags,
+                         state->package_ids,
+                         state->allow_deps,
+                         state->autoremove,
+                         state->cancellable,
+                         state->progress_callback,
+                         state->progress_user_data,
+                         (GAsyncReadyCallback) pk_task_ready_cb, state);
 	} else if (state->role == PK_ROLE_ENUM_INSTALL_FILES) {
 		pk_client_install_files_async (PK_CLIENT(state->task), transaction_flags, state->files,
 					       state->cancellable, state->progress_callback, state->progress_user_data,
@@ -469,6 +479,19 @@ pk_task_do_async_simulate_action (PkTaskState *state)
 						 state->progress_user_data,
 						 (GAsyncReadyCallback) pk_task_simulate_ready_cb,
 						 state);
+    } else if (state->role == PK_ROLE_ENUM_PURGE_PACKAGES) {
+        /* simulate removal with purge async */
+        g_debug ("doing purge");
+        pk_client_purge_packages_async (PK_CLIENT(state->task),
+                         transaction_flags,
+                         state->package_ids,
+                         state->allow_deps,
+                         state->autoremove,
+                         state->cancellable,
+                         state->progress_callback,
+                         state->progress_user_data,
+                         (GAsyncReadyCallback) pk_task_simulate_ready_cb,
+                         state);
 	} else if (state->role == PK_ROLE_ENUM_INSTALL_FILES) {
 		/* simulate install async */
 		g_debug ("doing install files");
@@ -1273,6 +1296,63 @@ pk_task_remove_packages_async (PkTask *task, gchar **package_ids, gboolean allow
 		pk_task_do_async_simulate_action (state);
 	else
 		pk_task_do_async_action (state);
+}
+
+/**
+ * pk_task_purge_packages_async:
+ * @task: a valid #PkTask instance
+ * @package_ids: (array zero-terminated=1): a null terminated array of package_id structures such as "hal;0.0.1;i386;fedora"
+ * @allow_deps: if other dependent packages are allowed to be removed from the computer
+ * @autoremove: if other packages installed at the same time should be tried to remove
+ * @cancellable: a #GCancellable or %NULL
+ * @progress_callback: (scope notified): the function to run when the progress changes
+ * @progress_user_data: data to pass to @progress_callback
+ * @callback_ready: the function to run on completion
+ * @user_data: the data to pass to @callback_ready
+ *
+ * Remove a package (optionally with dependancies), along with any configuration files, from the system.
+ * If @allow_deps is set to %FALSE, and other packages would have to be removed,
+ * then the transaction would fail.
+ *
+ * Since: 0.5.2
+ **/
+void
+pk_task_purge_packages_async (PkTask *task, gchar **package_ids, gboolean allow_deps, gboolean autoremove, GCancellable *cancellable,
+                   PkProgressCallback progress_callback, gpointer progress_user_data,
+                   GAsyncReadyCallback callback_ready, gpointer user_data)
+{
+    PkTaskState *state;
+    g_autoptr(GSimpleAsyncResult) res = NULL;
+    PkTaskClass *klass = PK_TASK_GET_CLASS (task);
+
+    g_return_if_fail (PK_IS_CLIENT (task));
+    g_return_if_fail (callback_ready != NULL);
+    g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
+
+    res = g_simple_async_result_new (G_OBJECT (task), callback_ready, user_data, pk_task_remove_packages_async);
+
+    /* save state */
+    state = g_slice_new0 (PkTaskState);
+    state->role = PK_ROLE_ENUM_PURGE_PACKAGES;
+    state->res = g_object_ref (res);
+    state->task = g_object_ref (task);
+    if (cancellable != NULL)
+        state->cancellable = g_object_ref (cancellable);
+    state->allow_deps = allow_deps;
+    state->autoremove = autoremove;
+    state->package_ids = g_strdupv (package_ids);
+    state->progress_callback = progress_callback;
+    state->progress_user_data = progress_user_data;
+    state->request = pk_task_generate_request_id ();
+
+    g_debug ("adding state %p", state);
+    g_ptr_array_add (task->priv->array, state);
+
+    /* start trusted install async */
+    if (task->priv->simulate && klass->simulate_question != NULL)
+        pk_task_do_async_simulate_action (state);
+    else
+        pk_task_do_async_action (state);
 }
 
 /**
