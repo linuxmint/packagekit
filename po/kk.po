@@ -1,0 +1,524 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PackageKit package.
+#
+# Translators:
+# Baurzhan Muftakhidinov <baurthefirst@gmail.com>, 2014
+msgid ""
+msgstr ""
+"Project-Id-Version: PackageKit\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: Kazakh (http://www.transifex.com/freedesktop/packagekit/language/kk/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: kk\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+msgid "(seconds)"
+msgstr "(секунд)"
+
+msgid "A filename is required"
+msgstr "Файл аты керек"
+
+#. TRANSLATORS: the user did not
+#. * specify what they wanted to install
+msgid "A filename to install is required"
+msgstr "Орнату үшін файл аты керек"
+
+#. TRANSLATORS: The user did not
+#. * provide a package name
+msgid "A package name is required"
+msgstr "Десте аты керек"
+
+#. TRANSLATORS: the user did not
+#. * specify what they wanted to install
+msgid "A package name to install is required"
+msgstr "Орнату үшін дестенің аты керек"
+
+#. TRANSLATORS: The user did not
+#. * specify a repository name
+msgid "A repository name is required"
+msgstr "Репозиторий атауы керек"
+
+#. TRANSLATORS: the user
+#. * needs to provide a search term
+#. TRANSLATORS: the user needs
+#. * to provide a search term
+msgid "A search term is required"
+msgstr "Іздеу үшін сөз керек"
+
+#. TRANSLATORS: a search type can
+#. * be name, details, file, etc
+msgid "A search type is required, e.g. name"
+msgstr "Іздеу түрі керек, мысалы, десте аты"
+
+#. TRANSLATORS: these are packages touched by the transaction
+msgid "Affected packages:"
+msgstr "Әсер етілетін дестелер:"
+
+#. TRANSLATORS: these are packages touched by the transaction
+msgid "Affected packages: None"
+msgstr "Әсер етілетін дестелер: Жоқ"
+
+#. TRANSLATORS: the EULA text itself (long and boring)
+msgid "Agreement"
+msgstr "Келісім"
+
+#. TRANSLATORS: a package requires the application to be restarted
+msgid "Application restart required by:"
+msgstr "Қолданбаны қайта іске қосуды талап ететін:"
+
+#. TRANSLATORS: this is the author of the backend
+msgid "Author"
+msgstr "Авторы"
+
+#. TRANSLATORS: The state of a package, i.e. not installed
+msgid "Available"
+msgstr "Қолжетерлік"
+
+#. TRANSLATORS: The type of update
+msgid "Blocked"
+msgstr "Блокталған"
+
+#. TRANSLATORS: details about the update, the bugzilla URLs
+msgid "Bugzilla"
+msgstr "Bugzilla"
+
+#. TRANSLATORS: details about the update, the CVE URLs
+msgid "CVE"
+msgstr "CVE"
+
+#. TRANSLATORS: transaction state, in the process of cancelling
+msgid "Cancelling"
+msgstr "Бас тартылуда"
+
+#. TRANSLATORS: this is the group category name
+msgid "Category"
+msgstr "Санат"
+
+#. TRANSLATORS: details about the update, the changelog for
+#. * the package
+msgid "Changes"
+msgstr "Өзгерістер"
+
+#. TRANSLATORS: transaction state, removing old packages, and cleaning config
+#. files
+msgid "Cleaning up packages"
+msgstr "Дестелер тазартылуда"
+
+#. TRANSLATORS: Generic failure of what they asked to do
+msgid "Command failed"
+msgstr "Команда сәтсіз аяқталды"
+
+#. TRANSLATORS: this is The command line used to do the action
+msgid "Command line"
+msgstr "Командалық жол"
+
+#. TRANSLATORS: this is the description of the backend
+msgid "Description"
+msgstr "Сипаттамасы"
+
+#. TRANSLATORS: this is a header for the package that can be updated
+msgid "Details about the update:"
+msgstr "Жаңарту туралы ақпарат:"
+
+#. TRANSLATORS: the directory does
+#. * not exist, so we can't continue
+msgid "Directory not found"
+msgstr "Бума табылмады"
+
+#. TRANSLATORS: if the repo is disabled
+msgid "Disabled"
+msgstr "Сөндірілген"
+
+#. TRANSLATORS: this is the distro, e.g. Fedora 10
+msgid "Distribution"
+msgstr "Дистрибутив"
+
+#. TRANSLATORS: ask the user if they've read and accepted the EULA
+msgid "Do you accept this agreement?"
+msgstr "Бұл келісім шартты қабылдайсыз ба?"
+
+#. TRANSLATORS: transaction state, downloading package files
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Downloading packages"
+msgstr "Дестелер жүктеліп алынуда"
+
+#. TRANSLATORS: this is The duration of the transaction
+msgid "Duration"
+msgstr "Ұзақтығы"
+
+#. TRANSLATORS: if the repo is enabled
+msgid "Enabled"
+msgstr "Іске қосылған"
+
+#. TRANSLATORS: The type of update
+msgid "Enhancement"
+msgstr "Жақсарту"
+
+#. TRANSLATORS: we failed to contact the daemon
+msgid "Failed to contact PackageKit"
+msgstr "PackageKit-пен байланысу сәтсіз"
+
+msgid "Failed to get daemon state"
+msgstr "Қызмет күйін алу сәтсіз"
+
+msgid "Failed to get properties"
+msgstr "Қасиеттерін алу сәтсіз"
+
+#. TRANSLATORS: we failed to install the package
+msgid "Failed to install packages"
+msgstr "Дестелерді орнату сәтсіз аяқталды"
+
+#. TRANSLATORS: probably not yet installed
+msgid "Failed to load the config file"
+msgstr "Баптаулар файлын жүктеу қатесі"
+
+#. TRANSLATORS: the user didn't read the man page
+msgid "Failed to parse arguments"
+msgstr "Аргументтерді талдау қатесі"
+
+#. TRANSLATORS: we failed to contact the daemon
+msgid "Failed to parse command line"
+msgstr "Командалық жолды талдау сәтсіз"
+
+msgid "False"
+msgstr "False"
+
+#. TRANSLATORS: we failed to get any results, which is pretty
+#. * fatal in my book
+msgid "Fatal error"
+msgstr "Қатаң қате"
+
+#. TRANSLATORS: There was an error
+#. * getting the list of packages.
+#. * The filename follows
+#, c-format
+msgid "File already exists: %s"
+msgstr "Файл бар болып тұр: %s"
+
+#. TRANSLATORS: transaction state, all done!
+msgid "Finished"
+msgstr "Аяқталған"
+
+#. TRANSLATORS: this is group identifier
+msgid "ID"
+msgstr "ID"
+
+#. TRANSLATORS: this is preferred icon for the group
+msgid "Icon"
+msgstr "Таңбаша"
+
+#. TRANSLATORS: The type of update
+msgid "Important"
+msgstr "Маңызды"
+
+#. TRANSLATORS: The state of a package
+#. TRANSLATORS: The action of the package, in past tense
+msgid "Installed"
+msgstr "Орнатылған"
+
+#. TRANSLATORS: this is the message we send plymouth to
+#. * advise of the new percentage completion when installing updates
+msgid "Installing Updates"
+msgstr "Жаңартуларды орнату"
+
+#. TRANSLATORS: transaction state, installing packages
+msgid "Installing packages"
+msgstr "Дестелер орнатылуда"
+
+#. TRANSLATORS: transaction state, installing updates
+msgid "Installing updates"
+msgstr "Жаңартулар орнатылуда"
+
+#. TRANSLATORS: details about the update, date the update
+#. * was issued
+msgid "Issued"
+msgstr "шығарылған"
+
+#. TRANSLATORS: more than one package could be found that matched,
+#. * to follow is a list of possible packages
+msgid "More than one package matches:"
+msgstr "Бірден көп десте сәйкес келеді:"
+
+#. TRANSLATORS: this is the name of the parent group
+#. TRANSLATORS: this is the name of the backend
+msgid "Name"
+msgstr "Аты"
+
+#. TRANSLATORS: This where the package has no files
+msgid "No files"
+msgstr "Файлдары жоқ"
+
+#. TRANSLATORS: we couldn't find anything
+msgid "No packages were found"
+msgstr "Бірде-бір десте табылмады"
+
+#. TRANSLATORS: The type of update
+msgid "Normal"
+msgstr "Қалыпты"
+
+#. TRANSLATORS: details about the update, any packages that
+#. * this update obsoletes
+msgid "Obsoletes"
+msgstr "Ескіртеді"
+
+#. TRANSLATORS: The user tried to use an
+#. * unsupported option on the command line
+#, c-format
+msgid "Option '%s' is not supported"
+msgstr "'%s' опциясына қолдау жоқ"
+
+#. TRANSLATORS: This a list of details about the package
+msgid "Package description"
+msgstr "Десте анықтамасы"
+
+#. TRANSLATORS: This a list files contained in the package
+msgid "Package files"
+msgstr "Десте файлдары"
+
+#. TRANSLATORS: we asked to install a package
+#. * that could not be found in any repo
+msgid "Package not found"
+msgstr "Десте табылмады"
+
+#. TRANSLATORS: program name
+msgid "PackageKit"
+msgstr "PackageKit"
+
+#. TRANSLATORS: This is the header to the --help menu
+msgid "PackageKit Console Interface"
+msgstr "PackageKit консольік интерфейсі"
+
+#. TRANSLATORS: this is a program that monitors PackageKit
+msgid "PackageKit Monitor"
+msgstr "PackageKit бақылаушысы"
+
+#. TRANSLATORS: describing the service that is running
+msgid "PackageKit service"
+msgstr "PackageKit қызметі"
+
+#. TRANSLATORS: this is the parent group
+msgid "Parent"
+msgstr "Аталық"
+
+#. TRANSLATORS: the percentage complete of the transaction
+msgid "Percentage"
+msgstr "Пайыздық шамасы"
+
+#. TRANSLATORS: This finds out which package in the list to use
+msgid "Please choose the correct package: "
+msgstr "Керек дестені таңдаңыз:"
+
+#. TRANSLATORS: this is the users real name, e.g. "Richard Hughes"
+msgid "Real name"
+msgstr "Шын аты"
+
+#. TRANSLATORS: command description
+msgid "Refresh the cache"
+msgstr "Кэшті жаңарту"
+
+#. TRANSLATORS: command description
+msgid "Refresh the cache (forced)"
+msgstr "Кэшті жаңарту (мәжбүрлі)"
+
+#. TRANSLATORS: transaction state, refreshing internal lists
+msgid "Refreshing software list"
+msgstr "БҚ тізімі жаңартылуда"
+
+#. TRANSLATORS: transaction state, removing packages
+msgid "Removing packages"
+msgstr "Дестелер өшірілуде"
+
+#. TRANSLATORS: details about the update, if the package
+#. * requires a restart
+msgid "Restart"
+msgstr "Қайта жүктеу"
+
+#. TRANSLATORS: the results from the transaction
+msgid "Results:"
+msgstr "Нәтижелер:"
+
+#. TRANSLATORS: this is the transactions role, e.g. "update-packages"
+msgid "Role"
+msgstr "Ролі"
+
+#. TRANSLATORS: Ask the user if we should run the similar command
+msgid "Run similar command:"
+msgstr "Ұқсас команданы орындау:"
+
+#. TRANSLATORS: command description
+msgid "Search by details"
+msgstr "Сипаттамасы бойынша іздеу"
+
+#. TRANSLATORS: command description
+msgid "Search by files"
+msgstr "Файлдар бойынша іздеу"
+
+#. TRANSLATORS: command description
+msgid "Search by names"
+msgstr "Аттары бойынша іздеу"
+
+#. TRANSLATORS: The type of update
+msgid "Security"
+msgstr "Қауіпсіздік"
+
+#. TRANSLATORS: a package requires the session to be restarted
+#. * due to a security update
+msgid "Session restart (security) required:"
+msgstr "Жүйені қайта іске қосу (қауіпсіздік) керек:"
+
+#. TRANSLATORS: a package requires the session to be restarted
+msgid "Session restart required:"
+msgstr "Сессияны қайта іске қосу керек:"
+
+#. TRANSLATORS: command description
+msgid "Set repository options"
+msgstr "Репозиторий опцияларын орнату"
+
+#. TRANSLATORS: command line argument, just show the version string
+msgid "Show the program version and exit"
+msgstr "Бағдарлама нұсқасын шығару және шығу"
+
+#. TRANSLATORS: show version
+msgid "Show version and exit"
+msgstr "Нұсқа ақпаратын шығарып, жұмысты аяқтау"
+
+#. TRANSLATORS: tell the user what we think the command is
+msgid "Similar command is:"
+msgstr "Ұқсас команда:"
+
+#. TRANSLATORS: show the user a list of commands that they could have meant
+#. TRANSLATORS: show the user a list of commands we could run
+msgid "Similar commands are:"
+msgstr "Ұқсас командалар:"
+
+#. TRANSLATORS: details about the update, the ongoing state
+#. * of the update
+msgid "State"
+msgstr "Қалып-күйі"
+
+#. TRANSLATORS: the status of the transaction (e.g. downloading)
+msgid "Status"
+msgstr "Қалып-күй"
+
+#. TRANSLATORS: this is if the transaction succeeded or not
+msgid "Succeeded"
+msgstr "Сәтті аяқталды"
+
+#. TRANSLATORS: this is any summary text describing the upgrade
+#. TRANSLATORS: this is the summary of the group
+msgid "Summary"
+msgstr "Жинақы ақпарат"
+
+#. TRANSLATORS: a package requires the system to be restarted
+#. * due to a security update
+msgid "System restart (security) required by:"
+msgstr "Жүйені қайта іске қосуды (қауіпсіздік) талап ететін:"
+
+#. TRANSLATORS: a package requires the system to be restarted
+msgid "System restart required by:"
+msgstr "Жүйенің қайта жүктелуін талап ететін:"
+
+#. TRANSLATORS: this is the time the transaction was started in system
+#. timezone
+msgid "System time"
+msgstr "Жүйелік уақыт"
+
+#. TRANSLATORS: tell the user we've not done anything
+msgid "The agreement was not accepted."
+msgstr "Келісім шарт қабылданбады."
+
+#. TRANSLATORS: The user specified
+#. * an incorrect filter
+msgid "The filter specified was invalid"
+msgstr "Көрсетілген сүзгі қате"
+
+#. TRANSLATORS: When processing, untrusted and non-verified packages may be
+#. encountered
+msgid "The following packages are untrusted:"
+msgstr "Келесі дестелер сенімсіз:"
+
+#. TRANSLATORS: When processing, we might have to downgrade other dependencies
+msgid "The following packages have to be downgraded:"
+msgstr "Келесі дестелердің нұсқалары төмендетілуі керек:"
+
+#. TRANSLATORS: When processing, we might have to install other dependencies
+msgid "The following packages have to be installed:"
+msgstr "Келесі дестелер орнатылуы керек:"
+
+#. TRANSLATORS: When processing, we might have to reinstall other dependencies
+msgid "The following packages have to be reinstalled:"
+msgstr "Келесі дестелер қайта орнатылуы керек:"
+
+#. TRANSLATORS: When processing, we might have to remove other dependencies
+msgid "The following packages have to be removed:"
+msgstr "Келесі дестелер өшірілуі керек:"
+
+#. TRANSLATORS: When processing, we might have to update other dependencies
+msgid "The following packages have to be updated:"
+msgstr "Келесі дестелер жаңартылуы керек:"
+
+#. TRANSLATORS: The network settings could not be sent
+msgid "The proxy could not be set"
+msgstr "Проксиді орнату мүмкін ем ес"
+
+#. TRANSLATORS: the transaction failed in a way we could
+#. * not expect
+#. TRANSLATORS: the transaction failed in a way we could not expect
+msgid "The transaction failed"
+msgstr "Транзакция сәтсіз аяқталды"
+
+#. TRANSLATORS: the user asked to update everything,
+#. * but there is nothing that can be updated
+msgid "There are no packages to update."
+msgstr "Жаңарту үшін дестелер жоқ."
+
+#. TRANSLATORS: this is an atomic transaction
+#. TRANSLATORS: the role is the point of the transaction,
+#. * e.g. update-packages
+msgid "Transaction"
+msgstr "Транзакция"
+
+msgid "True"
+msgstr "True"
+
+#. TRANSLATORS: this is type of update, stable or testing
+msgid "Type"
+msgstr "Түрі"
+
+#. TRANSLATORS: details about the update, any description of
+#. * the update
+msgid "Update text"
+msgstr "Жаңарту мәтіні"
+
+#. TRANSLATORS: details about the update, date the update
+#. * was updated
+#. TRANSLATORS: The action of the package, in past tense
+msgid "Updated"
+msgstr "Жаңартылған"
+
+#. TRANSLATORS: details about the update, any packages that
+#. * this update updates
+msgid "Updates"
+msgstr "Жаңартулар"
+
+#. TRANSLATORS: this is the user ID of the user that started the action
+msgid "User ID"
+msgstr "Пайдаланушы ID-і"
+
+#. TRANSLATORS: this is the username, e.g. hughsie
+msgid "Username"
+msgstr "Пайдаланушы аты"
+
+#. TRANSLATORS: details about the update, the vendor URLs
+#. TRANSLATORS: the vendor (e.g. vmware) that is providing the EULA
+msgid "Vendor"
+msgstr "Өндіруші"
+
+#. TRANSLATORS: the prefix of all the output telling the user
+#. * why it's not executing. NOTE: this is lowercase to mimic
+#. * the style of bash itself -- apologies
+msgid "command not found"
+msgstr "команда табылмады"

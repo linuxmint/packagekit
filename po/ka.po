@@ -1,0 +1,251 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PackageKit package.
+#
+# Translators:
+# George Machitidze <giomac@gmail.com>, 2012
+msgid ""
+msgstr ""
+"Project-Id-Version: PackageKit\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: Georgian (http://www.transifex.com/freedesktop/packagekit/language/ka/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ka\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+msgid "(seconds)"
+msgstr "(წამი)"
+
+#. TRANSLATORS: The user did not
+#. * provide a package name
+msgid "A package name is required"
+msgstr "პაკეტის სახელი აუცილებელია"
+
+#. TRANSLATORS: The user did not
+#. * specify a repository name
+msgid "A repository name is required"
+msgstr "რეპოზიტორიის სახელი აუცილებელია"
+
+#. TRANSLATORS: a package requires the application to be restarted
+msgid "Application restart required by:"
+msgstr "პროგრამის გადატვირთვას ითხოვს:"
+
+#. TRANSLATORS: details about the update, the bugzilla URLs
+msgid "Bugzilla"
+msgstr "Bugzilla"
+
+#. TRANSLATORS: details about the update, the CVE URLs
+msgid "CVE"
+msgstr "CVE"
+
+#. TRANSLATORS: this is the group category name
+msgid "Category"
+msgstr "კატეგორია"
+
+#. TRANSLATORS: details about the update, the changelog for
+#. * the package
+msgid "Changes"
+msgstr "ცვლილებები"
+
+#. TRANSLATORS: Generic failure of what they asked to do
+msgid "Command failed"
+msgstr "ბრძანება ვერ შესრულდა"
+
+#. TRANSLATORS: this is The command line used to do the action
+msgid "Command line"
+msgstr "ბრძანებათა სტრიქონი"
+
+#. TRANSLATORS: the directory does
+#. * not exist, so we can't continue
+msgid "Directory not found"
+msgstr "დირექტორია ვერ მოიძებნა"
+
+#. TRANSLATORS: if the repo is disabled
+msgid "Disabled"
+msgstr "გამოირთო"
+
+#. TRANSLATORS: this is the distro, e.g. Fedora 10
+msgid "Distribution"
+msgstr "გავრცელება"
+
+#. TRANSLATORS: this is The duration of the transaction
+msgid "Duration"
+msgstr "ხანგრძლივობა"
+
+#. TRANSLATORS: if the repo is enabled
+msgid "Enabled"
+msgstr "ჩაირთო"
+
+#. TRANSLATORS: we failed to find the package, this shouldn't happen
+msgid "Failed to search for file"
+msgstr "შეცდომა ფაილის ძებნისას"
+
+msgid "False"
+msgstr "მცდარი"
+
+#. TRANSLATORS: we failed to get any results, which is pretty
+#. * fatal in my book
+msgid "Fatal error"
+msgstr "ფატალური შეცდომა"
+
+#. TRANSLATORS: this is group identifier
+msgid "ID"
+msgstr "ID"
+
+#. TRANSLATORS: this is preferred icon for the group
+msgid "Icon"
+msgstr "ხატულა"
+
+#. TRANSLATORS: details about the update, date the update
+#. * was issued
+msgid "Issued"
+msgstr "გამოშვება"
+
+#. TRANSLATORS: loading package cache so we can search
+msgid "Loading list of packages."
+msgstr "პაკეტების სიის ჩატვირთვა."
+
+#. TRANSLATORS: this is the name of the parent group
+#. TRANSLATORS: this is the name of the backend
+msgid "Name"
+msgstr "სახელი"
+
+#. TRANSLATORS: This where the package has no files
+msgid "No files"
+msgstr "ფაილები არაა"
+
+#. TRANSLATORS: details about the update, any packages that
+#. * this update obsoletes
+msgid "Obsoletes"
+msgstr "მოძველებული"
+
+#. TRANSLATORS: The user tried to use an
+#. * unsupported option on the command line
+#, c-format
+msgid "Option '%s' is not supported"
+msgstr "პარამეტრი '%s' არ არის მხარდაჭერილი"
+
+#. TRANSLATORS: This a list of details about the package
+msgid "Package description"
+msgstr "პაკეტის აღწერა"
+
+#. TRANSLATORS: This a list files contained in the package
+msgid "Package files"
+msgstr "პაკეტის ფაილები"
+
+#. TRANSLATORS: This is the header to the --help menu
+msgid "PackageKit Console Interface"
+msgstr "PackageKit კონსოლური ინტერფეისი"
+
+#. TRANSLATORS: this is the parent group
+msgid "Parent"
+msgstr "მშობლიური"
+
+#. TRANSLATORS: the percentage complete of the transaction
+msgid "Percentage"
+msgstr "პროცენტი"
+
+#. TRANSLATORS: this is the users real name, e.g. "Richard Hughes"
+msgid "Real name"
+msgstr "ნამდვილი სახელი"
+
+#. TRANSLATORS: details about the update, if the package
+#. * requires a restart
+msgid "Restart"
+msgstr "გადატვირთვა"
+
+#. TRANSLATORS: the results from the transaction
+msgid "Results:"
+msgstr "შედეგები:"
+
+#. TRANSLATORS: this is the transactions role, e.g. "update-packages"
+msgid "Role"
+msgstr "როლი"
+
+#. TRANSLATORS: a package requires the session to be restarted
+#. * due to a security update
+msgid "Session restart (security) required:"
+msgstr "სესიის გადატვირთვას (უსაფრთხოებისთვის) ითხოვს:"
+
+#. TRANSLATORS: a package requires the session to be restarted
+msgid "Session restart required:"
+msgstr "საჭიროა სესიის გადატვირთვა:"
+
+#. TRANSLATORS: details about the update, the ongoing state
+#. * of the update
+msgid "State"
+msgstr "მდგომარეობა"
+
+#. TRANSLATORS: the status of the transaction (e.g. downloading)
+msgid "Status"
+msgstr "მდგომარეობა"
+
+#. TRANSLATORS: this is if the transaction succeeded or not
+msgid "Succeeded"
+msgstr "წარმატებით"
+
+#. TRANSLATORS: a package requires the system to be restarted
+#. * due to a security update
+msgid "System restart (security) required by:"
+msgstr "სისტემის გადატვირთვას (უსაფრთხოებისთვის) ითხოვს:"
+
+#. TRANSLATORS: a package requires the system to be restarted
+msgid "System restart required by:"
+msgstr "სისტემის გადატვირთვას ითხოვს:"
+
+#. TRANSLATORS: this is the time the transaction was started in system
+#. timezone
+msgid "System time"
+msgstr "სისტემური დრო"
+
+#. TRANSLATORS: the transaction failed in a way we could
+#. * not expect
+#. TRANSLATORS: the transaction failed in a way we could not expect
+msgid "The transaction failed"
+msgstr "ტრანზაქცია ვერ შესრულდა"
+
+#. TRANSLATORS: print a message when there are no updates
+msgid "There are no updates available at this time."
+msgstr "ამ მომენტისთვის განახლებები არ არის"
+
+msgid "There are no upgrades available at this time."
+msgstr "ამ მომენტისთვის განახლებები არ არის"
+
+#. TRANSLATORS: this is an atomic transaction
+#. TRANSLATORS: the role is the point of the transaction,
+#. * e.g. update-packages
+msgid "Transaction"
+msgstr "ტრანზაქცია"
+
+msgid "True"
+msgstr "ჭეშმარიტი"
+
+#. TRANSLATORS: this is type of update, stable or testing
+msgid "Type"
+msgstr "ტიპი"
+
+#. TRANSLATORS: details about the update, any description of
+#. * the update
+msgid "Update text"
+msgstr "განახლების ტექსტი"
+
+#. TRANSLATORS: details about the update, date the update
+#. * was updated
+#. TRANSLATORS: The action of the package, in past tense
+msgid "Updated"
+msgstr "განახლდა"
+
+#. TRANSLATORS: this is the user ID of the user that started the action
+msgid "User ID"
+msgstr "მომხმარებლის ID"
+
+#. TRANSLATORS: this is the username, e.g. hughsie
+msgid "Username"
+msgstr "მომხმარებლის სახელი"
+
+#. TRANSLATORS: details about the update, the vendor URLs
+#. TRANSLATORS: the vendor (e.g. vmware) that is providing the EULA
+msgid "Vendor"
+msgstr "მომწოდებელი"

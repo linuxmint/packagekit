@@ -1,0 +1,3 @@
+etc/PackageKit/CommandNotFound.conf
+etc/profile.d/PackageKit.sh
+usr/libexec/pk-command-not-found

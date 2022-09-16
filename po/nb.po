@@ -1,0 +1,109 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PackageKit package.
+#
+# Translators:
+# Mats Taraldsvik <mats.taraldsvik@gmail.com>, 2008
+# Richard Hughes <richard@hughsie.com>, 2011
+msgid ""
+msgstr ""
+"Project-Id-Version: PackageKit\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: Norwegian Bokmål (http://www.transifex.com/freedesktop/packagekit/language/nb/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: nb\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. SECURITY:
+#. - Normal users do not require admin authentication to accept new
+#. licence agreements.
+#. - Change this to 'auth_admin' for environments where users should not
+#. be given the option to make legal decisions.
+msgid "Accept EULA"
+msgstr "Godkjenn EULA"
+
+msgid "Authentication is required to accept a EULA"
+msgstr "Kan ikke godkjenne en EULA uten identitetsbekreftelse"
+
+#. TRANSLATORS: Generic failure of what they asked to do
+msgid "Command failed"
+msgstr "Klarte ikke å kjøre kommandoen"
+
+#. TRANSLATORS: if we should not monitor how long we are inactive for
+msgid "Disable the idle timer"
+msgstr "Deaktiver inaktivitetskontrollen"
+
+#. TRANSLATORS: exit after we've started up, used for user profiling
+msgid "Exit after a small delay"
+msgstr "Avslutt etter en liten forsinkelse"
+
+#. TRANSLATORS: exit straight away, used for automatic profiling
+msgid "Exit after the engine has loaded"
+msgstr "Avslutt etter maskinen har lastet"
+
+#. TRANSLATORS: This where the package has no files
+msgid "No files"
+msgstr "Ingen filer"
+
+#. TRANSLATORS: This a list of details about the package
+msgid "Package description"
+msgstr "Programpakkebeskrivelse"
+
+#. TRANSLATORS: This a list files contained in the package
+msgid "Package files"
+msgstr "Programpakkens filer"
+
+#. TRANSLATORS: This is the header to the --help menu
+msgid "PackageKit Console Interface"
+msgstr "PackageKit Konsollgrensesnitt"
+
+#. TRANSLATORS: this is a program that monitors PackageKit
+msgid "PackageKit Monitor"
+msgstr "PackageKit Monitor"
+
+#. TRANSLATORS: describing the service that is running
+msgid "PackageKit service"
+msgstr "PackageKit-tjeneste"
+
+#. TRANSLATORS: a backend is the system package tool, e.g. dnf, apt
+msgid "Packaging backend to use, e.g. dummy"
+msgstr "Velg backend for programpakkene, f.eks foobar"
+
+#, c-format
+msgid "Please enter a number from 1 to %i: "
+msgstr "Skriv inn ett tall fra 1 til %i: "
+
+#. SECURITY:
+#. - Normal users require admin authentication to remove packages as
+#. this can make the system unbootable or stop other applications from
+#. working.
+#. - Be sure to close the tool used to remove the packages after the
+#. admin authentication has been obtained, otherwise packages can still
+#. be removed. If this is not possible, change this authentication to
+#. 'auth_admin'.
+#. TRANSLATORS: command description
+msgid "Remove package"
+msgstr "Fjern programpakke"
+
+#. TRANSLATORS: command line argument, use a filter to narrow down results
+msgid "Set the filter, e.g. installed"
+msgstr "Bruk filteret, f.eks installerte (programpakker)"
+
+#. TRANSLATORS: command line argument, just show the version string
+msgid "Show the program version and exit"
+msgstr "Vis versjonsnummer og avslutt"
+
+#. TRANSLATORS: show version
+msgid "Show version and exit"
+msgstr "Vis versjonsnummer og avslutt"
+
+#. these are commands we can use with pkcon
+msgid "Subcommands:"
+msgstr "Underkommandoer:"
+
+#. TRANSLATORS: This is when the daemon crashed, and we are up
+#. * shit creek without a paddle
+msgid "The daemon crashed mid-transaction!"
+msgstr "Nissen (daemon) krasjet under operasjonen!"

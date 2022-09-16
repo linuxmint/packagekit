@@ -1,0 +1,572 @@
+# PackageKit e brezhoneg.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PackageKit package.
+# Thierry Vignaud <thierry.vignaud@gmail.com>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PackageKit\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: Brezhoneg\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "(seconds)"
+msgstr "(eilennoù)"
+
+#. TRANSLATORS: a package requires the application to be restarted
+msgid "Application restart required by:"
+msgstr "Ret eo adloc'hañ ar programm abalamour da :"
+
+#. TRANSLATORS: details about the update, the bugzilla URLs
+msgid "Bugzilla"
+msgstr "Bugzilla"
+
+#. TRANSLATORS: details about the update, the CVE URLs
+msgid "CVE"
+msgstr "CVE"
+
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Canceling"
+msgstr "O nulat"
+
+#. TRANSLATORS: transaction state, in the process of cancelling
+msgid "Cancelling"
+msgstr "O nullat"
+
+#. TRANSLATORS: this is the group category name
+msgid "Category"
+msgstr "Rummad"
+
+#. TRANSLATORS: details about the update, the changelog for the package
+msgid "Changes"
+msgstr "Cheñchamantoù"
+
+#. TRANSLATORS: The action of the package, in past tense
+msgid "Cleaned up"
+msgstr "Naetaet"
+
+#. TRANSLATORS: The action of the package, in present tense
+msgid "Cleaning up"
+msgstr "O naetaat"
+
+#. TRANSLATORS: transaction state, removing old packages, and cleaning config files
+msgid "Cleaning up packages"
+msgstr "O naetat ar pakadoù"
+
+#. TRANSLATORS: Generic failure of what they asked to do
+msgid "Command failed"
+msgstr "Sac’het eo an urzh"
+
+#. TRANSLATORS: could not install, detailed error follows
+#, c-format
+msgid "Could not install packages: %s"
+msgstr "N’hell ket bet staliet ar pakadoù : %s"
+
+#. TRANSLATORS: this is a header for the package that can be updated
+msgid "Details about the update:"
+msgstr "Munudoù ar vremanaat"
+
+#. TRANSLATORS: the directory does not exist, so we can't continue
+msgid "Directory not found"
+msgstr "N’eo ket kavet ar renkell"
+
+#. TRANSLATORS: if the repo is disabled
+msgid "Disabled"
+msgstr "Marv"
+
+#. TRANSLATORS: ask the user if they want to import
+msgid "Do you accept this signature?"
+msgstr "Hag-eñ e tegemerit ar sinadur-mañ ?"
+
+#. TRANSLATORS: The action of the package, in past tense
+msgid "Downloaded"
+msgstr "Pellgarget"
+
+#. TRANSLATORS: transaction state, downloading metadata
+msgid "Downloading file lists"
+msgstr "O pellkargan roll ar restroù"
+
+#. TRANSLATORS: transaction state, downloading metadata
+msgid "Downloading groups"
+msgstr "O pellkargan ar strolladoù"
+
+#. TRANSLATORS: transaction state, downloading metadata
+msgid "Downloading list of packages"
+msgstr "O pellkargan roll ar pakadoù"
+
+#. TRANSLATORS: transaction state, downloading metadata
+msgid "Downloading lists of changes"
+msgstr "O pellkargan roll ar chenchamantoù"
+
+#. TRANSLATORS: if the repo is enabled
+msgid "Enabled"
+msgstr "Bevaet "
+
+#. TRANSLATORS: operation was not successful
+msgid "FAILED."
+msgstr "SAC’HET."
+
+#. TRANSLATORS: we failed to contact the daemon
+msgid "Failed to contact PackageKit"
+msgstr "Sac’het eo bet kevreañ gant PackageKit"
+
+#. TRANSLATORS: we couldn't find the package name, non-fatal
+#, c-format
+msgid "Failed to find the package %s, or already installed: %s"
+msgstr "N’hell ket bet kavet ar pakad %s pe eo staliet dija: %s"
+
+#. TRANSLATORS: we couldn't find the package name, non-fatal
+#, c-format
+msgid "Failed to find the package %s: %s"
+msgstr "N’hell ket bet kavet ar pakad %s : %s"
+
+#. TRANSLATORS: we failed to install the package
+msgid "Failed to install packages"
+msgstr "Sac’het eo bet staliañ ar pakadoù"
+
+#. TRANSLATORS: we failed to find the package, this shouldn't happen
+msgid "Failed to search for file"
+msgstr "Sac’het eo bet klask ar restr"
+
+msgid "False"
+msgstr "N’eo ket gwir"
+
+#. TRANSLATORS: we failed to get any results, which is pretty fatal in my book
+msgid "Fatal error"
+msgstr "Fazi sac'hus"
+
+#. TRANSLATORS: There was an error getting the list of packages. The filename follows
+#, c-format
+msgid "File already exists: %s"
+msgstr "Bez ez eus eus ar restr dija : %s"
+
+#. TRANSLATORS: transaction state, all done!
+msgid "Finished"
+msgstr "Echu eo"
+
+#. TRANSLATORS: tell the user we found some more packages
+#, c-format
+msgid "Found %i extra packages."
+msgstr "Kavet ez eus bet %i pakad ouzhpenn."
+
+#. TRANSLATORS: tell the user we found some packages (and deps), and then list them
+#, c-format
+msgid "Found %i packages to install:"
+msgstr "Kavet ez eus bet %i pakad da staliañ :"
+
+#. TRANSLATORS: tell the user we found some packages, and then list them
+#, c-format
+msgid "Found %i packages:"
+msgstr "Kavet ez eus bet %i pakad"
+
+#. TRANSLATORS: no debuginfo packages could be found to be installed
+#, c-format
+msgid "Found no packages to install."
+msgstr "N’eo ket bet kavet pakadoù da staliañ"
+
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Getting details"
+msgstr "O tegas ar munudoù"
+
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Getting file list"
+msgstr "O tegas roll ar restroù"
+
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Getting packages"
+msgstr "O tegas ar pakadoù"
+
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Getting update details"
+msgstr "O tegas munudoù ar vremanaat"
+
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Getting updates"
+msgstr "O tigas ar vremanaat"
+
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Getting upgrades"
+msgstr "O tegas ar vremanaat"
+
+#. TRANSLATORS: this is preferred icon for the group
+msgid "Icon"
+msgstr "Arlun"
+
+#. SECURITY:
+#. - Normal users do not need authentication to install signed packages
+#. from signed repositories, as this cannot exploit a system.
+#. - Paranoid users (or parents!) can change this to 'auth_admin' or
+#. 'auth_admin_keep'.
+#.
+msgid "Install signed package"
+msgstr "Staliañ ur pakad sinet"
+
+#. TRANSLATORS: The state of a package
+#. TRANSLATORS: The action of the package, in past tense
+msgid "Installed"
+msgstr "Staliet"
+
+#. TRANSLATORS: The action of the package, in present tense
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Installing"
+msgstr "O staliañ"
+
+#. TRANSLATORS: this is the message we send plymouth to
+#. * advise of the new percentage completion
+#, fuzzy
+msgid "Installing Updates"
+msgstr "O staliañ ar vremanaat"
+
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Installing files"
+msgstr "O staliañ ar restroù"
+
+#. TRANSLATORS: we are now installing the debuginfo packages we found earlier
+#. TRANSLATORS: transaction state, installing packages
+#, c-format
+msgid "Installing packages"
+msgstr "O staliañ ar pakadoù"
+
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Installing signature"
+msgstr "O staliañ ar sinadur"
+
+#. TRANSLATORS: transaction state, installing updates
+msgid "Installing updates"
+msgstr "O staliañ ar vremanaat"
+
+#. TRANSLATORS: package is being installed
+msgid "Installing..."
+msgstr "O staliañ ..."
+
+#. TRANSLATORS: details about the update, date the update was issued
+msgid "Issued"
+msgstr "Embannet"
+
+#. TRANSLATORS: the key URL
+msgid "Key URL"
+msgstr "URL an alc’hwez"
+
+#. TRANSLATORS: transaction state, loading databases
+msgid "Loading cache"
+msgstr "O kargan ar grubuilh"
+
+#. TRANSLATORS: loading package cache so we can search
+msgid "Loading list of packages."
+msgstr "O kargañ roll ar pakadoù."
+
+#. TRANSLATORS: the media label, usually like 'disk-1of3'
+msgid "Media label"
+msgstr "Skridennad ar media"
+
+#. TRANSLATORS: the type, e.g. DVD, CD, etc
+msgid "Media type"
+msgstr "Seurt ar media"
+
+#. TRANSLATORS: this is the name of the parent group
+msgid "Name"
+msgstr "Anv"
+
+#. TRANSLATORS: tell the user we found some more packages
+#, c-format
+msgid "No extra packages required."
+msgstr "N’eus pakad ouzhpenn a zo ezhomm"
+
+#. TRANSLATORS: This where the package has no files
+msgid "No files"
+msgstr "Restr ebet"
+
+#. TRANSLATORS: noting found, so can't install
+msgid "No packages found for your system"
+msgstr "N’eus pakad ebet a zo bet kavet evit ho reizhiad"
+
+#. TRANSLATORS: all completed 100%
+#, c-format
+msgid "OK."
+msgstr "MAD."
+
+#. TRANSLATORS: details about the update, package name and version
+#. TRANSLATORS: the package that is being processed
+#. TRANSLATORS: the package that is not signed by a known key
+#. TRANSLATORS: the package name that was trying to be installed
+msgid "Package"
+msgstr "Pakad"
+
+#. TRANSLATORS: This a list of details about the package
+msgid "Package description"
+msgstr "Deskrivadur ar pakad"
+
+#. TRANSLATORS: This a list files contained in the package
+msgid "Package files"
+msgstr "Restroù ar pakad"
+
+#. TRANSLATORS: describing the service that is running
+msgid "PackageKit service"
+msgstr "Servij PackageKit"
+
+#. TRANSLATORS: the percentage complete of the transaction
+msgid "Percentage"
+msgstr "Dregantad"
+
+#. TRANSLATORS: ask the user to choose a file to install
+msgid "Please choose a package to install"
+msgstr "Dibabit ur pakad da staliañ mar plij"
+
+#. TRANSLATORS: a package needs to restart their system
+msgid "Please restart the computer to complete the update."
+msgstr "Adloc’hit an urzhiataer mar plij evit echuiñ ar vremanaat."
+
+#. TRANSLATORS: ask the user if the proposed changes are okay
+msgid "Proceed with changes?"
+msgstr "Deomp dezhi gant ar cheñchamantoù ?"
+
+#. TRANSLATORS: this is the users real name, e.g. "Richard Hughes"
+msgid "Real name"
+msgstr "Anv gwirion"
+
+#. TRANSLATORS: we've finished doing offline updates
+#, fuzzy
+msgid "Rebooting after installing updates…"
+msgstr "O staliañ ar vremanaat"
+
+#. TRANSLATORS: The action of the package, in past tense
+msgid "Reinstalled"
+msgstr "Adstaliet"
+
+#. TRANSLATORS: The action of the package, in present tense
+msgid "Reinstalling"
+msgstr "Oc’h adstaliañ"
+
+#. SECURITY:
+#. - Normal users require admin authentication to rebind a driver
+#. so that it works after we install firmware.
+#. - This should not be set to 'yes' as unprivileged users could then
+#. try to rebind drivers in use, for instance security authentication
+#. devices.
+#.
+msgid "Reload a device"
+msgstr "Adloc'hañ un drobarzhell"
+
+#. TRANSLATORS: The action of the package, in past tense
+msgid "Removed"
+msgstr "Lamet"
+
+#. TRANSLATORS: The action of the package, in present tense
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Removing"
+msgstr "O lemel"
+
+#. SECURITY:
+#. - Normal users require admin authentication to repair the system
+#. since this can make the system unbootable or stop other
+#. applications from working.
+#.
+msgid "Repair System"
+msgstr "Pareañ ar reizhiad"
+
+#. TRANSLATORS: details about the update, if the package requires a restart
+msgid "Restart"
+msgstr "Adloc'hañ"
+
+#. TRANSLATORS: the results from the transaction
+msgid "Results:"
+msgstr "Disoc’hoù :"
+
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Searching by details"
+msgstr "O klask dre ar munudoù"
+
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Searching by file"
+msgstr "O klask dre restroù"
+
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Searching by name"
+msgstr "O klask dre an anvioù"
+
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Searching groups"
+msgstr "O klask dre ar strolladoù"
+
+#. TRANSLATORS: The type of update
+msgid "Security"
+msgstr "Diogelroez"
+
+#. TRANSLATORS: a package requires the session to be restarted due to a security update
+msgid "Session restart (security) required:"
+msgstr "Ret eo adloc'hañ an estez abalamour da (surentez) :"
+
+#. TRANSLATORS: a package requires the session to be restarted
+msgid "Session restart required:"
+msgstr "Ret eo adloc'hañ an estez abalamour da :"
+
+#. TRANSLATORS: we are starting to install the packages
+msgid "Starting install"
+msgstr "O kregiñ gant staliañ"
+
+#. TRANSLATORS: details about the update, the ongoing state of the update
+msgid "State"
+msgstr "Stad"
+
+#. TRANSLATORS: the status of the transaction (e.g. downloading)
+msgid "Status"
+msgstr "Stad"
+
+#. TRANSLATORS: this is any summary text describing the upgrade
+#. TRANSLATORS: this is the summary of the group
+msgid "Summary"
+msgstr "Diverradenn"
+
+#. TRANSLATORS: a package requires the system to be restarted due to a security update
+msgid "System restart (security) required by:"
+msgstr "Ret eo adloc'hañ ar reizhiad abalamour da (surentez) :"
+
+#. TRANSLATORS: a package requires the system to be restarted
+msgid "System restart required by:"
+msgstr "Ret eo adloc'hañ ar reizhiad abalamour da :"
+
+#. TRANSLATORS: this is the time the transaction was started in system timezone
+msgid "System time"
+msgstr "Eur ar reizhiad"
+
+#. TRANSLATORS: the media description, usually like 'Fedora 12 disk 5'
+msgid "Text"
+msgstr "Skrid"
+
+#. TRANSLATORS: When processing, untrusted and non-verified packages may be encountered
+msgid "The following packages are untrusted:"
+msgstr "N’eo ket sur ar pakadoù a-heul :"
+
+#. TRANSLATORS: When processing, we might have to downgrade other dependencies
+msgid "The following packages have to be downgraded:"
+msgstr "Ret eo devremanaat ar pakadoù a-heul :"
+
+#. TRANSLATORS: When processing, we might have to install other dependencies
+msgid "The following packages have to be installed:"
+msgstr "Ret eo staliañ ar pakadoù a-heul :"
+
+#. TRANSLATORS: When processing, we might have to reinstall other dependencies
+msgid "The following packages have to be reinstalled:"
+msgstr "Ret eo adstaliañ ar pakadoù a-heul :"
+
+#. TRANSLATORS: When processing, we might have to remove other dependencies
+msgid "The following packages have to be removed:"
+msgstr "Ret eo lemel ar pakadoù a-heul :"
+
+#. TRANSLATORS: When processing, we might have to update other dependencies
+msgid "The following packages have to be updated:"
+msgstr "Ret eo bremanaat ar pakadoù a-heul :"
+
+#. TRANSLATORS: The user specified an incorrect filter
+msgid "The proxy could not be set"
+msgstr "N’hell ket bet kefluniet ar proksi"
+
+#. TRANSLATORS: tell the user we've not done anything
+msgid "The signature was not accepted."
+msgstr "N’eo ket bet degemeret ar sinadur."
+
+#. TRANSLATORS: is not GPG signed
+msgid "The software is not from a trusted source."
+msgstr "Ne zeu ar meziant eus un tarzh sur."
+
+#. TRANSLATORS: the transaction failed in a way we could not expect
+msgid "The transaction failed"
+msgstr "Sac'het eo ar gourc'hemenn"
+
+#. TRANSLATORS: tell the user we've not done anything
+msgid "The unsigned software will not be installed."
+msgstr "N’hell ket bet staliet ar pakad n’eo ket sinet."
+
+#. TRANSLATORS: the user asked to update everything, but there is nothing that can be updated
+msgid "There are no packages to update."
+msgstr "N'eus pakad ebet da vremanaat"
+
+#. TRANSLATORS: print a message when there are no updates
+msgid "There are no updates available at this time."
+msgstr "N’eus netra da vremanaat bremañ."
+
+msgid "There are no upgrades available at this time."
+msgstr "N’eus netra da vremanaat bremañ."
+
+#. TRANSLATORS: There was an error getting the list of files for the package. The detailed error follows
+#, c-format
+msgid "This tool could not find the installed package: %s"
+msgstr "Ne c’hell ket an ostilh-mañ kavout ar pakadoù staliet : %s"
+
+#. TRANSLATORS: There was an error getting the list of files for the package. The detailed error follows
+#, c-format
+msgid "This tool could not find the package: %s"
+msgstr "Ne c’hell ket an ostilh-mañ kavout ar pakad : %s"
+
+#. TRANSLATORS: this is an atomic transaction
+#. TRANSLATORS: the role is the point of the transaction, e.g. update-packages
+msgid "Transaction"
+msgstr "Gourc'hemenn"
+
+msgid "True"
+msgstr "Gwir"
+
+#. TRANSLATORS: this is type of update, stable or testing
+msgid "Type"
+msgstr "Seurt"
+
+#. TRANSLATORS: details about the update, any description of the update
+msgid "Update text"
+msgstr "Skrid ar vremanaat"
+
+#. TRANSLATORS: details about the update, date the update was updated
+#. TRANSLATORS: The action of the package, in past tense
+msgid "Updated"
+msgstr "Bremanaet"
+
+#. TRANSLATORS: details about the update, any packages that this update updates
+msgid "Updates"
+msgstr "Bremanaat"
+
+#. TRANSLATORS: The action of the package, in present tense
+msgid "Updating"
+msgstr "O bremanaat"
+
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Updating packages"
+msgstr "O bremanaat ar pakadoù"
+
+#. SECURITY:
+#. - Normal users require admin authentication to upgrade the disto as
+#. this can make the system unbootable or stop other applications from
+#. working.
+#.
+msgid "Upgrade System"
+msgstr "Bremanaat ar reizhiad"
+
+#. TRANSLATORS: this is the user ID of the user that started the action
+msgid "User ID"
+msgstr "ID an arveriad"
+
+msgid "User aborted selection"
+msgstr "Nullet eo bet an dibab gant an arveriad"
+
+#. TRANSLATORS: this is the username, e.g. hughsie
+msgid "Username"
+msgstr "Anv arveriad"
+
+#. TRANSLATORS: details about the update, the vendor URLs
+#. TRANSLATORS: the vendor (e.g. vmware) that is providing the EULA
+msgid "Vendor"
+msgstr "Gwerzhour"
+
+#. TRANSLATORS: the version of the package
+msgid "Version"
+msgstr "Stumm"
+
+#. TRANSLATORS: the prefix of all the output telling the user
+#. * why it's not executing. NOTE: this is lowercase to mimic
+#. * the style of bash itself -- apologies
+msgid "command not found"
+msgstr "n’eo ket kavet an urzh"
+
+#~ msgid "Message:"
+#~ msgstr "Kemennad :"

@@ -1,0 +1,31 @@
+From f1b905cf2d0c6ebbad2c7ed12e24b19268fbef63 Mon Sep 17 00:00:00 2001
+From: Matthias Klumpp <matthias@tenstral.net>
+Date: Tue, 22 Feb 2022 23:35:02 +0100
+Subject: [PATCH] aptcc: Fix emission of package IDs if there is just one
+ candidate available
+
+Resolves: #534
+---
+ backends/aptcc/apt-cache-file.cpp | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+--- a/backends/aptcc/apt-cache-file.cpp
++++ b/backends/aptcc/apt-cache-file.cpp
+@@ -380,13 +380,11 @@
+             strcmp(ver.VerStr(), parts[PK_PACKAGE_ID_VERSION]) == 0)
+         return PkgInfo(ver, piAction);
+
+-    const pkgCache::VerIterator &candidateVer = findCandidateVer(pkg);
+     // check to see if the provided package isn't virtual too
+-    // also iterate through all the available versions
+-    for (auto candidate = candidateVer; !candidate.end(); candidate++) {
+-        if (strcmp(candidate.VerStr(), parts[PK_PACKAGE_ID_VERSION]) == 0) {
+-            return PkgInfo(ver, piAction);
+-        }
++    // also iterate through all available past versions
++    for (auto candidateVer = findCandidateVer(pkg); !candidateVer.end(); candidateVer++) {
++        if (strcmp(candidateVer.VerStr(), parts[PK_PACKAGE_ID_VERSION]) == 0)
++            return PkgInfo(candidateVer, piAction);
+     }
+
+     return PkgInfo(ver, piAction);
