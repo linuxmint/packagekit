@@ -150,7 +150,8 @@ public:
                       bool fixBroken = false);
 
     void tryToRemove(pkgProblemResolver &Fix,
-                     const PkgInfo &pki);
+                     const PkgInfo &pki,
+                     bool purge);
 
 private:
     void buildPkgRecords();
