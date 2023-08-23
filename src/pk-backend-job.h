@@ -46,6 +46,7 @@ typedef enum {
 	PK_BACKEND_SIGNAL_DISTRO_UPGRADE,
 	PK_BACKEND_SIGNAL_FINISHED,
 	PK_BACKEND_SIGNAL_PACKAGE,
+	PK_BACKEND_SIGNAL_PACKAGES,
 	PK_BACKEND_SIGNAL_ITEM_PROGRESS,
 	PK_BACKEND_SIGNAL_FILES,
 	PK_BACKEND_SIGNAL_PERCENTAGE,
@@ -59,6 +60,7 @@ typedef enum {
 	PK_BACKEND_SIGNAL_STATUS_CHANGED,
 	PK_BACKEND_SIGNAL_LOCKED_CHANGED,
 	PK_BACKEND_SIGNAL_UPDATE_DETAIL,
+	PK_BACKEND_SIGNAL_UPDATE_DETAILS,
 	PK_BACKEND_SIGNAL_CATEGORY,
 	PK_BACKEND_SIGNAL_LAST
 } PkBackendJobSignal;
@@ -178,6 +180,8 @@ void		 pk_backend_job_package_full		(PkBackendJob	*job,
 							 const gchar	*package_id,
 							 const gchar	*summary,
 							 PkInfoEnum	 update_severity);
+void		 pk_backend_job_packages		(PkBackendJob	*job,
+							 GPtrArray	*packages);
 void		 pk_backend_job_repo_detail		(PkBackendJob	*job,
 							 const gchar	*repo_id,
 							 const gchar	*description,
@@ -195,6 +199,8 @@ void		 pk_backend_job_update_detail		(PkBackendJob	*job,
 							 PkUpdateStateEnum state,
 							 const gchar	*issued,
 							 const gchar	*updated);
+void		 pk_backend_job_update_details		(PkBackendJob	*job,
+							 GPtrArray	*update_details);
 void		 pk_backend_job_require_restart		(PkBackendJob	*job,
 							 PkRestartEnum	 restart,
 							 const gchar	*package_id);

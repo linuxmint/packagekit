@@ -5,7 +5,7 @@ cpp_compiler = meson.get_compiler('cpp')
 gstreamer_dep = dependency('gstreamer-1.0')
 gstreamer_base_dep = dependency('gstreamer-base-1.0')
 gstreamer_plugins_base_dep = dependency('gstreamer-plugins-base-1.0')
-appstream_dep = dependency('appstream', version: '>=0.12')
+appstream_dep = dependency('appstream', version: '>=0.16.0')
 apt_pkg_dep = dependency('apt-pkg', version: '>=1.9.2')
 
 # Check whether apt supports ddtp
@@ -25,41 +25,45 @@ if cpp_compiler.compiles(
   ddtp_flag = ['-DHAVE_DDTP']
 endif
 
+c_args = ['-DG_LOG_DOMAIN="PackageKit-APT"',
+          '-DDATADIR="@0@"'.format(join_paths(get_option('prefix'), get_option('datadir'))),
+]
+
 shared_module(
-  'pk_backend_aptcc',
+  'pk_backend_apt',
+  'pk-backend-apt.cpp',
   'acqpkitstatus.cpp',
   'acqpkitstatus.h',
-  'gst-matcher.cpp',
-  'gst-matcher.h',
-  'apt-messages.cpp',
-  'apt-messages.h',
-  'apt-utils.cpp',
-  'apt-utils.h',
-  'apt-sourceslist.cpp',
-  'apt-sourceslist.h',
   'apt-cache-file.cpp',
   'apt-cache-file.h',
-  'apt-intf.cpp',
-  'apt-intf.h',
-  'pkg-list.cpp',
-  'pkg-list.h',
+  'apt-job.cpp',
+  'apt-job.h',
+  'apt-messages.cpp',
+  'apt-messages.h',
+  'apt-sourceslist.cpp',
+  'apt-sourceslist.h',
+  'apt-utils.cpp',
+  'apt-utils.h',
   'deb-file.cpp',
   'deb-file.h',
-  'pk-backend-aptcc.cpp',
+  'gst-matcher.cpp',
+  'gst-matcher.h',
+  'pkg-list.cpp',
+  'pkg-list.h',
   include_directories: packagekit_src_include,
   dependencies: [
     packagekit_glib2_dep,
     gmodule_dep,
     apt_pkg_dep,
+    appstream_dep,
     gstreamer_dep,
     gstreamer_base_dep,
     gstreamer_plugins_base_dep,
-    appstream_dep,
   ],
+  c_args: c_args,
   cpp_args: [
-    '-DG_LOG_DOMAIN="PackageKit-APTcc"',
-    '-DPK_COMPILATION=1',
-    '-DDATADIR="@0@"'.format(join_paths(get_option('prefix'), get_option('datadir'))),
+    '-DPK_COMPILATION',
+    c_args,
     ddtp_flag,
   ],
   link_args: [
@@ -80,7 +84,7 @@ install_data(
 
 install_data(
   'pkconffile.nodiff',
-  install_dir: join_paths(get_option('datadir'), 'PackageKit', 'helpers', 'aptcc'),
+  install_dir: join_paths(get_option('datadir'), 'PackageKit', 'helpers', 'apt'),
 )
 
 if get_option('systemd')

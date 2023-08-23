@@ -5,7 +5,7 @@ DEB_HOST_ARCH_OS ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
 # Use this variable to set the PackageKit configure flags
-PK_CONFIGURE_FLAGS = -Dpackaging_backend=aptcc \
+PK_CONFIGURE_FLAGS = -Dpackaging_backend=apt \
 			-Dsystemd=true \
 			-Doffline_update=true \
 			-Dgobject_introspection=true \
@@ -75,6 +75,11 @@ override_dh_gencontrol:
 	dh_gencontrol -- $(SUBSTVARS)
 
 override_dh_installsystemd:
-	# the offline-updates service is enabled by tools like GNOME-Software when they need it,
-	# but we do want to clear leftover symlinks upon removal of the package.
-	dh_installsystemd --no-enable --no-start --no-restart-after-upgrade
+	# We don't want to stop/restart the packagekit service and especially not the
+	# packagekit-offline-update service, as PackageKit might be performing the
+	# package upgrade right now and would kill the running APT/dpkg transaction,
+	# leaving the system in a broken state.
+	# The PackageKit daemon is fine with being upgraded while running, and we do
+	# send it the `SuggestDaemonQuit` command to have it reload itself when it is
+	# able to (ensuring it doesn't crash after ejecting the backend and reloading it).
+	dh_installsystemd --no-start --no-restart-after-upgrade --no-stop-on-upgrade

@@ -30,9 +30,11 @@
 #include <packagekit-glib2/pk-enum.h>
 #include <packagekit-glib2/pk-common.h>
 #include <packagekit-glib2/pk-bitfield.h>
+#include <packagekit-glib2/pk-package.h>
 #include <packagekit-glib2/pk-package-id.h>
 #include <packagekit-glib2/pk-package-ids.h>
 #include <packagekit-glib2/pk-bitfield.h>
+#include <packagekit-glib2/pk-update-detail.h>
 
 #include "pk-backend.h"
 #include "pk-backend-job.h"
@@ -186,12 +188,6 @@ void		 pk_backend_remove_packages		(PkBackend	*backend,
 							 gchar		**package_ids,
 							 gboolean	 allow_deps,
 							 gboolean	 autoremove);
-void         pk_backend_purge_packages     (PkBackend  *backend,
-                             PkBackendJob   *job,
-                             PkBitfield  transaction_flags,
-                             gchar      **package_ids,
-                             gboolean    allow_deps,
-                             gboolean    autoremove);
 void		 pk_backend_resolve			(PkBackend	*backend,
 							 PkBackendJob	*job,
 							 PkBitfield	 filters,

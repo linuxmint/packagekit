@@ -285,8 +285,8 @@ bool AptCacheFile::doAutomaticRemove()
 
     // Now see if we destroyed anything
     if ((*this)->BrokenCount() != 0) {
-        cout << "Hmm, seems like the AutoRemover destroyed something which really\n"
-                "shouldn't happen. Please file a bug report against apt." << endl;
+        g_warning("Seems like the AutoRemover destroyed something which really "
+                  "shouldn't happen. Please file a bug report against APT.");
         // TODO call show_broken
         //       ShowBroken(c1out,cache,false);
         return _error->Error("Internal Error, AutoRemover broke stuff");
@@ -544,8 +544,7 @@ bool AptCacheFile::tryToInstall(pkgProblemResolver &Fix,
 }
 
 void AptCacheFile::tryToRemove(pkgProblemResolver &Fix,
-                               const PkgInfo &pki,
-                               bool purge)
+                               const PkgInfo &pki)
 {
     pkgCache::PkgIterator Pkg = pki.ver.ParentPkg();
 
@@ -561,7 +560,9 @@ void AptCacheFile::tryToRemove(pkgProblemResolver &Fix,
     Fix.Clear(Pkg);
     Fix.Protect(Pkg);
     Fix.Remove(Pkg);
-    GetDepCache()->MarkDelete(Pkg, purge);
+    // TODO this is false since PackageKit can't
+    // tell it want's o purge
+    GetDepCache()->MarkDelete(Pkg, false);
 }
 
 std::string AptCacheFile::debParser(std::string descr)

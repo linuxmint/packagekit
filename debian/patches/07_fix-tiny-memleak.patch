@@ -1,0 +1,22 @@
+From 0ed58a451ddbf833f7623e1410863e52ada22045 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Corentin=20No=C3=ABl?= <corentin.noel@collabora.com>
+Date: Mon, 24 Apr 2023 15:59:30 +0200
+Subject: [PATCH] progress: Free the sender value on finalize
+
+Avoid leaking the sender value.
+---
+ lib/packagekit-glib2/pk-progress.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/lib/packagekit-glib2/pk-progress.c b/lib/packagekit-glib2/pk-progress.c
+index 83889024d..2f221750d 100644
+--- a/lib/packagekit-glib2/pk-progress.c
++++ b/lib/packagekit-glib2/pk-progress.c
+@@ -1157,6 +1157,7 @@ pk_progress_finalize (GObject *object)
+ 
+ 	g_free (progress->priv->package_id);
+ 	g_free (progress->priv->transaction_id);
++	g_free (progress->priv->sender);
+ 
+ 	G_OBJECT_CLASS (pk_progress_parent_class)->finalize (object);
+ }

@@ -20,18 +20,18 @@
 
 #include "acqpkitstatus.h"
 
-#include "apt-intf.h"
+#include "apt-job.h"
 
 #include <apt-pkg/acquire-worker.h>
 #include <apt-pkg/error.h>
 
 // AcqPackageKitStatus::AcqPackageKitStatus - Constructor
 // ---------------------------------------------------------------------
-AcqPackageKitStatus::AcqPackageKitStatus(AptIntf *apt, PkBackendJob *job) :
-    m_job(job),
+AcqPackageKitStatus::AcqPackageKitStatus(AptJob *apt) :
     m_lastPercent(PK_BACKEND_PERCENTAGE_INVALID),
     m_lastCPS(0),
-    m_apt(apt)
+    m_apt(apt),
+    m_job(apt->pkJob())
 {
 }
 
@@ -39,7 +39,21 @@ AcqPackageKitStatus::AcqPackageKitStatus(AptIntf *apt, PkBackendJob *job) :
 // ---------------------------------------------------------------------
 void AcqPackageKitStatus::Start()
 {
-    pk_backend_job_set_status(m_job, PK_STATUS_ENUM_DOWNLOAD);
+    PkRoleEnum role = pk_backend_job_get_role(m_job);
+    PkStatusEnum status;
+
+    switch (role) {
+    case PK_ROLE_ENUM_GET_UPDATE_DETAIL:
+        status = PK_STATUS_ENUM_DOWNLOAD_CHANGELOG;
+        break;
+    case PK_ROLE_ENUM_REFRESH_CACHE:
+        status = PK_STATUS_ENUM_DOWNLOAD_UPDATEINFO;
+        break;
+    default:
+        status = PK_STATUS_ENUM_DOWNLOAD;
+    }
+    pk_backend_job_set_status(m_job, status);
+
     pkgAcquireStatus::Start();
 }
 
@@ -225,7 +239,7 @@ void AcqPackageKitStatus::updateStatus(pkgAcquire::ItemDesc & Itm, int status)
     } else {
         // emit the package
         m_apt->emitPackage(ver, PK_INFO_ENUM_DOWNLOADING);
-        
+
         // Emit the individual progress
         m_apt->emitPackageProgress(ver, PK_STATUS_ENUM_DOWNLOAD, status);
     }

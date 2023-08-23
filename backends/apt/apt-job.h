@@ -1,4 +1,4 @@
-/* apt-intf.h - Interface to APT
+/* apt-job.h - Interface to APT
  *
  * Copyright (c) 1999-2002, 2004-2005, 2007-2008 Daniel Burrows
  * Copyright (c) 2009-2016 Daniel Nicoletti <dantti12@gmail.com>
@@ -21,8 +21,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef APTINTF_H
-#define APTINTF_H
+#pragma once
 
 #include <glib.h>
 #include <glib/gstdio.h>
@@ -35,20 +34,25 @@
 #include "pkg-list.h"
 #include "apt-sourceslist.h"
 
-#define REBOOT_REQUIRED      "/var/run/reboot-required"
+#define REBOOT_REQUIRED_FILE    "/run/reboot-required"
 
 class pkgProblemResolver;
 class Matcher;
 class AptCacheFile;
-class AptIntf
+class AptJob
 {
 public:
-    AptIntf(PkBackendJob *job);
-    ~AptIntf();
+    AptJob(PkBackendJob *job);
+    ~AptJob();
 
     bool init(gchar **localDebs = nullptr);
     void cancel();
     bool cancelled() const;
+
+    /**
+     * Returns the PackageKit backend job associated with this APT job.
+     */
+    PkBackendJob *pkJob() const;
 
     /**
      * Tries to find a package with the given packageId
@@ -93,7 +97,6 @@ public:
      */
     bool runTransaction(const PkgList &install,
                         const PkgList &remove,
-                        const PkgList &purge,
                         const PkgList &update,
                         bool fixBroken,
                         PkBitfield flags,
@@ -196,11 +199,6 @@ public:
     void emitDetails(PkgList &pkgs);
 
     /**
-      * Emits update detail
-      */
-    void emitUpdateDetail(const pkgCache::VerIterator &candver);
-
-    /**
       * Emits update datails for the given list
       */
     void emitUpdateDetails(const PkgList &pkgs);
@@ -249,6 +247,12 @@ private:
     bool packageIsSupported(const pkgCache::VerIterator &verIter, string component);
     bool isApplication(const pkgCache::VerIterator &verIter);
     bool matchesQueries(const vector<string> &queries, string s);
+    bool dpkgHasForceConfFileSet();
+    PkInfoEnum packageStateFromVer(const pkgCache::VerIterator &ver) const;
+    void stagePackageForEmit(GPtrArray *array, const pkgCache::VerIterator &ver,
+                             PkInfoEnum state = PK_INFO_ENUM_UNKNOWN,
+                             PkInfoEnum updateSeverity = PK_INFO_ENUM_UNKNOWN) const;
+    void stageUpdateDetail(GPtrArray *updateArray, const pkgCache::VerIterator &candver);
 
     /**
      *  interprets dpkg status fd
@@ -258,7 +262,7 @@ private:
     pkgCache::VerIterator findTransactionPackage(const std::string &name);
 
     AptCacheFile *m_cache;
-    PkBackendJob  *m_job;
+    PkBackendJob *m_job;
     bool       m_cancel;
     struct stat m_restartStat;
 
@@ -276,5 +280,3 @@ private:
     int m_terminalTimeout;
     pid_t m_child_pid;
 };
-
-#endif

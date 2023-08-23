@@ -10,7 +10,7 @@ usr/libexec/packagekit-direct
 usr/libexec/packagekitd
 usr/libexec/pk-debconf-helper
 usr/libexec/pk-offline-update
-usr/share/PackageKit/helpers/aptcc/*
+usr/share/PackageKit/helpers/apt/*
 usr/share/PackageKit/helpers/test_spawn/*
 usr/share/dbus-1/interfaces
 usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service

@@ -1,0 +1,34 @@
+From 140b060111ede3049533ca781b38e7fb6b9a62ca Mon Sep 17 00:00:00 2001
+From: Matthias Klumpp <matthias@tenstral.net>
+Date: Fri, 10 Feb 2023 23:14:31 +0100
+Subject: [PATCH] apt: Set update urgency as urgency as well as status again
+
+Apparently doing anything else confuses frontends that have worked with
+the old code before.
+---
+ backends/apt/apt-job.cpp | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/backends/apt/apt-job.cpp b/backends/apt/apt-job.cpp
+index a670e3c55..d983374b0 100644
+--- a/backends/apt/apt-job.cpp
++++ b/backends/apt/apt-job.cpp
+@@ -573,6 +573,8 @@ void AptJob::emitUpdates(PkgList &output, PkBitfield filters)
+                 state = PK_INFO_ENUM_SECURITY;
+             } else if (ends_with(archive, "-backports")) {
+                 state = PK_INFO_ENUM_ENHANCEMENT;
++            } else if (ends_with(archive, "-proposed-updates") || ends_with(archive, "-updates-proposed")) {
++                state = PK_INFO_ENUM_LOW;
+             } else if (ends_with(archive, "-updates")) {
+                 state = PK_INFO_ENUM_BUGFIX;
+             }
+@@ -581,7 +583,8 @@ void AptJob::emitUpdates(PkgList &output, PkBitfield filters)
+             state = PK_INFO_ENUM_ENHANCEMENT;
+         }
+ 
+-        stagePackageForEmit(pkgArray, pkgInfo.ver, PK_INFO_ENUM_UNKNOWN, state);
++        // NOTE: Frontends expect us to pass the update urgency as both its state *and* actual urgency value here.
++        stagePackageForEmit(pkgArray, pkgInfo.ver, state, state);
+     }
+ 
+     // emit

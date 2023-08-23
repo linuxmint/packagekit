@@ -90,7 +90,6 @@ static const PkEnumMatch enum_status[] = {
 	{PK_STATUS_ENUM_CHECK_LIBRARIES,	"check-libraries"},
 	{PK_STATUS_ENUM_COPY_FILES,		"copy-files"},
 	{PK_STATUS_ENUM_RUN_HOOK,		"run-hook"},
-    {PK_STATUS_ENUM_PURGE,         "purge"},
 	{0, NULL}
 };
 
@@ -129,7 +128,6 @@ static const PkEnumMatch enum_role[] = {
 	{PK_ROLE_ENUM_GET_OLD_TRANSACTIONS,		"get-old-transactions"},
 	{PK_ROLE_ENUM_REPAIR_SYSTEM,			"repair-system"},
 	{PK_ROLE_ENUM_UPGRADE_SYSTEM,			"upgrade-system"},
-    {PK_ROLE_ENUM_PURGE_PACKAGES,          "purge-packages"},
 	{0, NULL}
 };
 
@@ -203,7 +201,6 @@ static const PkEnumMatch enum_error[] = {
 	{PK_ERROR_ENUM_UNFINISHED_TRANSACTION,	"unfinished-transaction"},
 	{PK_ERROR_ENUM_LOCK_REQUIRED,		"lock-required"},
 	{PK_ERROR_ENUM_REPO_ALREADY_SET,	"repo-already-set"},
-    {PK_ERROR_ENUM_PACKAGE_FAILED_TO_PURGE, "package-failed-to-purge"},
 	{0, NULL}
 };
 
@@ -325,7 +322,6 @@ static const PkEnumMatch enum_info[] = {
 	{PK_INFO_ENUM_UNTRUSTED,			"untrusted"},
 	{PK_INFO_ENUM_TRUSTED,				"trusted"},
 	{PK_INFO_ENUM_CRITICAL,			"critical"},
-    {PK_INFO_ENUM_PURGING,          "purging"},
 	{0, NULL}
 };
 
@@ -1044,7 +1040,6 @@ pk_info_enum_to_localised_present (PkInfoEnum info)
 		/* TRANSLATORS: The action of the package, in present tense */
 		text = dgettext("PackageKit", "Installing");
 		break;
-    case PK_INFO_ENUM_PURGING:
 	case PK_INFO_ENUM_REMOVING:
 		/* TRANSLATORS: The action of the package, in present tense */
 		text = dgettext("PackageKit", "Removing");
@@ -1095,7 +1090,6 @@ pk_info_enum_to_localised_past (PkInfoEnum info)
 		text = dgettext("PackageKit", "Installed");
 		break;
 	case PK_INFO_ENUM_REMOVING:
-    case PK_INFO_ENUM_PURGING:
 		/* TRANSLATORS: The action of the package, in past tense */
 		text = dgettext("PackageKit", "Removed");
 		break;
@@ -1258,10 +1252,6 @@ pk_role_enum_to_localised_present (PkRoleEnum role)
 		/* TRANSLATORS: The role of the transaction, in present tense */
 		text = dgettext("PackageKit", "Getting system upgrades");
 		break;
-    case PK_ROLE_ENUM_PURGE_PACKAGES:
-        /* TRANSLATORS: The role of the transaction, in present tense */
-        text = dgettext("PackageKit", "Purging packages");
-        break;
 	default:
 		g_warning ("role unrecognised: %s", pk_role_enum_to_string (role));
 	}

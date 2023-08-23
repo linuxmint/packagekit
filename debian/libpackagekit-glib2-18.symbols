@@ -331,6 +331,7 @@ libpackagekit-glib2.so.18 libpackagekit-glib2-18 #MINVER#
  pk_progress_get_percentage@Base 1.1.0
  pk_progress_get_remaining_time@Base 1.1.0
  pk_progress_get_role@Base 1.1.0
+ pk_progress_get_sender@Base 1.2.6
  pk_progress_get_speed@Base 1.1.0
  pk_progress_get_status@Base 1.1.0
  pk_progress_get_transaction_flags@Base 1.1.0
@@ -348,6 +349,7 @@ libpackagekit-glib2.so.18 libpackagekit-glib2-18 #MINVER#
  pk_progress_set_percentage@Base 0.9.4
  pk_progress_set_remaining_time@Base 0.9.4
  pk_progress_set_role@Base 0.9.4
+ pk_progress_set_sender@Base 1.2.6
  pk_progress_set_speed@Base 0.9.4
  pk_progress_set_status@Base 0.9.4
  pk_progress_set_transaction_flags@Base 0.9.4

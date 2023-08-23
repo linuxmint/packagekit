@@ -1,21 +1,96 @@
-packagekit (1.2.5-2ubuntu2mint1) vera; urgency=medium
+packagekit (1.2.6-5) unstable; urgency=medium
 
-  * Add 'purge' capability (apt backend only).
+  * Add fix-tiny-memleak.patch:
+    - Free transaction property when progress is done.
+  * Add remove-references-to-packagekit.org.patch:
+    - The packagekit.org domain was taken over by an actor who is
+      serving potentially malicious ads on it, and no longer redirects
+      to the proper pages. To ensure nobody lands there accidentally,
+      replace all links to pk.org with the proper ones pointing at
+      freedesktop.org.
+  * Make the daemon package recommend packagekit-tools again
+    - This change was not intended for bookworm and may
+      be re-applied after its release (Closes: #1036153).
 
- -- Clement Lefebvre <root@linuxmint.com>  Fri, 16 Sep 2022 13:08:42 +0100
+ -- Matthias Klumpp <mak@debian.org>  Sun, 28 May 2023 19:00:10 +0200
 
-packagekit (1.2.5-2ubuntu2) jammy; urgency=medium
+packagekit (1.2.6-4) unstable; urgency=medium
 
-  * Update fix-single-candidate-pkgid-emission.patch. (LP: #1963904)
+  * Add apt-fix-mimetype-search-crash.patch (Closes: #1032510)
+    - Fixes a daemon crash when searching for provided mediatypes
+  * packagekit: Recommend, instead of suggest appstream
+    - It is needed for many operations, and quite odd for users if data
+      is randomly missing with no explanation.
+  * Don't have the library recommend the daemon package (Closes: #1012175)
+  * Bump standards version (no changes needed)
 
- -- Brian Murray <brian@ubuntu.com>  Mon, 14 Mar 2022 12:11:19 -0700
+ -- Matthias Klumpp <mak@debian.org>  Sun, 16 Apr 2023 18:58:34 +0200
 
-packagekit (1.2.5-2ubuntu1) jammy; urgency=low
+packagekit (1.2.6-3) unstable; urgency=medium
 
-  * Merge from Debian unstable (LP: #1961837). Remaining changes:
-    - debian/control: Added recommends for packagekit-installer
+  * Add apt-better-repo-names.patch:
+    - Display meaningful repository names instead of just suite names.
+  * Add pkcon-fix-progressbar-padding.patch:
+    - Fix layout when progress is shown.
+  * Add shutdown-daemon-on-idle.patch:
+    - Shut down daemon when it is not used again. This functionality
+      was originally removed to work around a bug in DNF which does
+      not affect us in Debian (Closes: #802306).
+  * Add fix-uninitialized-timer.patch:
+    - Fix potential crash that may occur on daemon shutdown.
+  * Add apt-update-urgency-as-status.patch:
+    - Send update urgencies as package status again, as this behavior
+      seems to be expected by frontends and did not cause any problems
+      in the past (Closes: #1030179).
 
- -- Julian Andres Klode <juliank@ubuntu.com>  Wed, 23 Feb 2022 11:10:46 +0100
+ -- Matthias Klumpp <mak@debian.org>  Fri, 10 Feb 2023 22:48:36 +0100
+
+packagekit (1.2.6-2) unstable; urgency=high
+
+  * Ensure PackageKit services aren't stopped or restarted during
+    package upgrade, as PackageKit might be performing an upgrade
+    of itself, and killing an ongoing APT transaction will break
+    the package manager and require manual repair.
+    This is an especially big problem when performing offline upgrades.
+    (Closes: #880712)
+
+ -- Matthias Klumpp <mak@debian.org>  Wed, 04 Jan 2023 18:40:38 +0100
+
+packagekit (1.2.6-1) unstable; urgency=medium
+
+  * New upstream version: 1.2.6
+    - New plural signals for improved performance
+    - Large APT backend refactoring
+    - Changelogs from APT are emitted correctly now
+  * Drop patches: Applied upstream
+  * Adjust rules for aptcc rename
+  * Refresh policy patch
+  * Update symbols file
+  * Depend on polkitd instead of policykit-1 (Closes: #1022071)
+  * Revert "Add alternate recommends for packagekit-installer"
+    - This patch changed the maintainer to Ubuntu, so was likely added
+      by mistake. Dropped the maintainer change, re-added the
+      "packagekit-installer" recommendation, as it is inert on Debian.
+
+ -- Matthias Klumpp <mak@debian.org>  Thu, 01 Dec 2022 20:42:52 +0100
+
+packagekit (1.2.5-4) unstable; urgency=medium
+
+  [ Ken VanDine ]
+  * Add alternate recommends for packagekit-installer
+
+  [ Debian Janitor ]
+  * Apply multi-arch hints. + packagekit-gtk3-module: Add Multi-Arch: same.
+
+ -- Jeremy Bicha <jbicha@ubuntu.com>  Wed, 30 Nov 2022 15:25:46 -0500
+
+packagekit (1.2.5-3) unstable; urgency=medium
+
+  * fix-single-candidate-pkgid-emission.patch: Handle case when there
+    is no candidate at all (LP: #1963904)
+  * Add aptcc_more-smartpointers.patch: Use smartpointers in more places
+
+ -- Matthias Klumpp <mak@debian.org>  Tue, 15 Mar 2022 14:36:34 +0100
 
 packagekit (1.2.5-2) unstable; urgency=medium
 
@@ -24,14 +99,6 @@ packagekit (1.2.5-2) unstable; urgency=medium
       is just one candidate available.
 
  -- Matthias Klumpp <mak@debian.org>  Tue, 22 Feb 2022 23:48:44 +0100
-
-packagekit (1.2.5-1ubuntu1) jammy; urgency=low
-
-  * Merge from Debian unstable. Remaining changes:
-    - debian/control: Added recommends for packagekit-installer
-  * 1.2.5 fixes manually installed kernel updates (LP: #1914278)
-
- -- Julian Andres Klode <juliank@ubuntu.com>  Mon, 21 Feb 2022 10:40:12 +0100
 
 packagekit (1.2.5-1) unstable; urgency=medium
 
@@ -65,21 +132,6 @@ packagekit (1.2.5-1) unstable; urgency=medium
 
  -- Matthias Klumpp <mak@debian.org>  Thu, 17 Feb 2022 21:40:18 +0100
 
-packagekit (1.2.4-1ubuntu2) jammy; urgency=medium
-
-  * No-change rebuild to update maintainer scripts, see LP: 1959054
-
- -- Dave Jones <dave.jones@canonical.com>  Wed, 16 Feb 2022 17:17:28 +0000
-
-packagekit (1.2.4-1ubuntu1) jammy; urgency=low
-
-  * Merge from Debian unstable. Remaining changes:
-    - debian/control: Added recommends for packagekit-installer
-  * Dropped wait-until-online-to-activate-systemd-service.patch, it was
-    not the root cause and did not fix the issue after all
-
- -- Julian Andres Klode <juliank@ubuntu.com>  Thu, 13 Jan 2022 17:51:50 +0100
-
 packagekit (1.2.4-1) unstable; urgency=medium
 
   * New upstream version: 1.2.4
@@ -88,28 +140,6 @@ packagekit (1.2.4-1) unstable; urgency=medium
   * Update symbols file
 
  -- Matthias Klumpp <mak@debian.org>  Sun, 07 Nov 2021 20:04:15 +0100
-
-packagekit (1.2.2-2ubuntu3) impish; urgency=medium
-
-  * Refresh wait-until-online-to-activate-systemd-service.patch with fixes
-    (LP: #1943189)
-
- -- Julian Andres Klode <juliank@ubuntu.com>  Mon, 27 Sep 2021 10:15:19 +0200
-
-packagekit (1.2.2-2ubuntu2) impish; urgency=medium
-
-  * Add wait-until-online-to-activate-systemd-service.patch: Wait until
-    after network-online.target to start packagekitd so it knows if it is
-    online, thanks to Erich Eickmeyer for the patch (LP: #1943189)
-
- -- Julian Andres Klode <juliank@ubuntu.com>  Fri, 17 Sep 2021 17:40:40 +0200
-
-packagekit (1.2.2-2ubuntu1) hirsute; urgency=low
-
-  * Merge from Debian unstable. Remaining changes:
-    - debian/control: Added recommends for packagekit-installer
-
- -- Julian Andres Klode <juliank@ubuntu.com>  Wed, 23 Dec 2020 13:47:51 +0100
 
 packagekit (1.2.2-2) unstable; urgency=medium
 
@@ -130,13 +160,6 @@ packagekit (1.2.2-1) unstable; urgency=medium
     pk_dbus_get_uid() before D-Bus is set up (Closes: #974826).
 
  -- Matthias Klumpp <mak@debian.org>  Tue, 22 Dec 2020 12:48:56 +0100
-
-packagekit (1.2.1-1ubuntu1) hirsute; urgency=low
-
-  * Merge from Debian unstable.  Remaining changes:
-    - debian/control: Added recommends for packagekit-installer
-
- -- Julian Andres Klode <juliank@ubuntu.com>  Mon, 09 Nov 2020 11:26:18 +0100
 
 packagekit (1.2.1-1) unstable; urgency=medium
 
@@ -166,38 +189,6 @@ packagekit (1.2.1-1) unstable; urgency=medium
   * Move daemon and helper binaries to /usr/libexec
 
  -- Matthias Klumpp <mak@debian.org>  Wed, 21 Oct 2020 18:26:38 +0200
-
-packagekit (1.1.13-2ubuntu2) groovy; urgency=medium
-
-  * SECURITY UPDATE: information disclosure (LP: #1888887)
-    - debian/patches/CVE-2020-16121.patch: hide failures behind a single
-      error message in src/pk-transaction.c.
-    - CVE-2020-16121
-  * SECURITY UPDATE: untrusted local file installation (LP: #1882098)
-    - debian/patches/CVE-2020-16122.patch: do not trust local packages in
-      backends/aptcc/apt-intf.cpp.
-    - CVE-2020-16122
-
- -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Wed, 23 Sep 2020 06:55:22 -0400
-
-packagekit (1.1.13-2ubuntu1) focal-proposed; urgency=medium
-
-  * debian/control
-    - Added recommends for packagekit-installer
-
- -- Ken VanDine <ken.vandine@canonical.com>  Thu, 12 Mar 2020 09:20:27 -0400
-
-packagekit (1.1.13-2build2) focal; urgency=high
-
-  * No change rebuild against apt 1.9.11.
-
- -- Julian Andres Klode <juliank@ubuntu.com>  Thu, 27 Feb 2020 09:15:23 +0100
-
-packagekit (1.1.13-2build1) focal; urgency=medium
-
-  * No-change rebuild with fixed binutils on arm64.
-
- -- Matthias Klose <doko@ubuntu.com>  Sat, 08 Feb 2020 11:15:09 +0000
 
 packagekit (1.1.13-2) unstable; urgency=medium
 
@@ -1401,4 +1392,3 @@ packagekit (0.6.8-1) unstable; urgency=low
   * Initial release (Closes: #468132)
 
  -- Matthias Klumpp <matthias@nlinux.org>  Wed, 25 Aug 2010 19:40:12 +0200
-

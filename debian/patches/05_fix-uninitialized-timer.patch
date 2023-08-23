@@ -1,0 +1,22 @@
+From 729323c0a86ac99aaf35c0c6229818813c84568f Mon Sep 17 00:00:00 2001
+From: Gordon Messmer <gordon.messmer@gmail.com>
+Date: Sun, 15 Jan 2023 15:44:18 -0800
+Subject: [PATCH] Fix use of potentially uninitialized timer ID (#599)
+
+---
+ src/pk-main.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/pk-main.c b/src/pk-main.c
+index d372a7456..43727d206 100644
+--- a/src/pk-main.c
++++ b/src/pk-main.c
+@@ -241,6 +241,8 @@ main (int argc, char *argv[])
+ 		helper.loop = loop;
+ 		helper.timer_id = g_timeout_add_seconds (5, (GSourceFunc) pk_main_timeout_check_cb, &helper);
+ 		g_source_set_name_by_id (helper.timer_id, "[PkMain] main poll");
++	} else {
++		helper.timer_id = 0;
+ 	}
+ 
+ 	/* immediatly exit */

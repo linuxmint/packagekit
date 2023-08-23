@@ -1,0 +1,58 @@
+From a249d2bce7d40d51f007f89a6a0e9f90bbd3ec08 Mon Sep 17 00:00:00 2001
+From: yump <yump@users.noreply.github.com>
+Date: Wed, 5 Apr 2023 14:11:01 -0500
+Subject: [PATCH] Shutdown daemon on idle by default again (#578)
+
+This reverts commit dca1f5b2508a4632d0b9fefab771a5a9caf83a5c.
+
+Which reverted commit 0c84d71509e851db20445c747529bd7d3724f081,
+which reverted commit c6eb3555ec5b41e988c111d276764d55fb83bda3.
+
+Fixes #460.
+
+The memory usage of packagekitd has been observed growing well beyond
+half a GiB using the DNF backend.  See:
+
+https://bugzilla.redhat.com/show_bug.cgi?id=1354074
+https://bugzilla.redhat.com/show_bug.cgi?id=1854875
+https://bugzilla.redhat.com/show_bug.cgi?id=1896964
+
+This is not as severe on backends that are not DNF, but since many backends were originally not designed to be called by long-running processes and the PackageKit daemon serves no purpose while it is doing nothing, reinstating the timeout makes sense to free unused system resources.
+This is especially useful on low-spec small single-board computers and embedded systems.
+
+Originally there was surprising behavior when users mix command line dnf upgades with GUI PackageKit
+upgrades, and do not manually run an update check before rebooting for update. This triggered the initial default-change to never time out was addressed in a better way via PR #600, allowing us to enable the timeout by default again.
+
+Co-authored-by: Matthias Klumpp <matthias@tenstral.net>
+Co-authored-by: Michael Catanzaro <mcatanzaro+github@innerfocus.xyz>
+---
+ src/pk-main.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
+
+diff --git a/src/pk-main.c b/src/pk-main.c
+index 43727d206..433ed11f2 100644
+--- a/src/pk-main.c
++++ b/src/pk-main.c
+@@ -182,8 +182,20 @@ main (int argc, char *argv[])
+ 	syslog (LOG_DAEMON | LOG_DEBUG, "daemon start");
+ 
+ 	/* after how long do we timeout? */
+-	exit_idle_time = g_key_file_get_integer (conf, "Daemon", "ShutdownTimeout", NULL);
+-	g_debug ("daemon shutdown set to %i seconds", exit_idle_time);
++	exit_idle_time = g_key_file_get_integer (conf, "Daemon", "ShutdownTimeout", &error);
++	/* THIS COMMENT IS A TSUNAMI STONE
++	 * The automatic shutdown timeout prevents memory leaks in some
++	 * backends from getting out of hand.  If you want to remove this
++	 * timeout, please study the Git history and be sure that you are not
++	 * regressing Red Hat bugzilla #1354074 (again). */
++	if (error != NULL) {
++		exit_idle_time = 300;
++		g_clear_error (&error);
++	}
++	if (exit_idle_time > 0)
++		g_debug ("daemon shutdown set to %i seconds", exit_idle_time);
++	else
++		g_debug ("daemon will not shut down on idle");
+ 
+ 	/* override the backend name */
+ 	if (backend_name != NULL) {

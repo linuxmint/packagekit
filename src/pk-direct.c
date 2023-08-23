@@ -296,30 +296,6 @@ pk_direct_remove (PkDirectPrivate *priv, gchar **values, GError **error)
 }
 
 static gboolean
-pk_direct_purge (PkDirectPrivate *priv, gchar **values, GError **error)
-{
-    if (g_strv_length (values) < 1) {
-        g_set_error_literal (error,
-                     PK_ERROR,
-                     PK_ERROR_INVALID_ARGUMENTS,
-                     "Not enough arguments, expected: <pkgid>");
-        return FALSE;
-    }
-    if (!pk_package_id_check (values[0])) {
-        g_set_error (error,
-                 PK_ERROR,
-                 PK_ERROR_INVALID_ARGUMENTS,
-                 "Not a package-id: %s", values[0]);
-        return FALSE;
-    }
-    pk_backend_start_job (priv->backend, priv->job);
-    pk_backend_purge_packages (priv->backend, priv->job, 0, values, FALSE, FALSE);
-    g_main_loop_run (priv->loop);
-    pk_backend_stop_job (priv->backend, priv->job);
-    return TRUE;
-}
-
-static gboolean
 pk_direct_repo_set_data (PkDirectPrivate *priv, gchar **values, GError **error)
 {
 	if (g_strv_length (values) != 3) {
@@ -378,6 +354,20 @@ pk_direct_package_cb (PkBackendJob *job, gpointer object, gpointer user_data)
 	g_print ("Package: %s\t%s\n",
 		 pk_info_enum_to_string (pk_package_get_info (pkg)),
 		 pk_package_get_id (pkg));
+}
+
+static void
+pk_direct_packages_cb (PkBackendJob *job, gpointer object, gpointer user_data)
+{
+	GPtrArray *package_array = object;
+
+	for (guint i = 0; i < package_array->len; i++) {
+		PkPackage *pkg = g_ptr_array_index (package_array, i);
+
+		g_print ("Package: %s\t%s\n",
+			 pk_info_enum_to_string (pk_package_get_info (pkg)),
+			 pk_package_get_id (pkg));
+	}
 }
 
 static void
@@ -457,10 +447,6 @@ main (int argc, char *argv[])
 		       /* TRANSLATORS: command description */
 		       _("Remove package"),
 		       pk_direct_remove);
-    pk_direct_add (priv->cmd_array, "purge", "[PKGID]",
-               /* TRANSLATORS: command description */
-               _("Purge package"),
-               pk_direct_purge);
 	pk_direct_add (priv->cmd_array, "repo-set-data", "[REPO] [KEY] [VALUE]",
 		       /* TRANSLATORS: command description */
 		       _("Set repository options"),
@@ -543,6 +529,8 @@ main (int argc, char *argv[])
 				  pk_direct_status_changed_cb, priv);
 	pk_backend_job_set_vfunc (priv->job, PK_BACKEND_SIGNAL_PACKAGE,
 				  pk_direct_package_cb, priv);
+	pk_backend_job_set_vfunc (priv->job, PK_BACKEND_SIGNAL_PACKAGES,
+				  pk_direct_packages_cb, priv);
 	pk_backend_job_set_vfunc (priv->job, PK_BACKEND_SIGNAL_ERROR_CODE,
 				  pk_direct_error_cb, priv);
 	pk_backend_job_set_vfunc (priv->job, PK_BACKEND_SIGNAL_ITEM_PROGRESS,

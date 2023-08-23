@@ -165,13 +165,15 @@ main (int argc, char *argv[])
 	conf = g_key_file_new ();
 	conf_filename = pk_util_get_config_filename ();
 	if (conf_filename == NULL) {
-		g_printerr ("Config file was not found.");
+		g_printerr ("%s\n", _("Config file was not found."));
 		goto out;
 	}
 	ret = g_key_file_load_from_file (conf, conf_filename,
 					 G_KEY_FILE_NONE, &error);
 	if (!ret) {
-		g_printerr ("Failed to load config file: %s", error->message);
+		/* TRANSLATORS: The placeholder is an error message */
+		g_autofree gchar *message = g_strdup_printf (_("Failed to load config file: %s"), error->message);
+		g_printerr ("%s\n", message);
 		goto out;
 	}
 	g_key_file_set_boolean (conf, "Daemon", "KeepEnvironment", keep_environment);
@@ -180,8 +182,20 @@ main (int argc, char *argv[])
 	syslog (LOG_DAEMON | LOG_DEBUG, "daemon start");
 
 	/* after how long do we timeout? */
-	exit_idle_time = g_key_file_get_integer (conf, "Daemon", "ShutdownTimeout", NULL);
-	g_debug ("daemon shutdown set to %i seconds", exit_idle_time);
+	exit_idle_time = g_key_file_get_integer (conf, "Daemon", "ShutdownTimeout", &error);
+	/* THIS COMMENT IS A TSUNAMI STONE
+	 * The automatic shutdown timeout prevents memory leaks in some
+	 * backends from getting out of hand.  If you want to remove this
+	 * timeout, please study the Git history and be sure that you are not
+	 * regressing Red Hat bugzilla #1354074 (again). */
+	if (error != NULL) {
+		exit_idle_time = 300;
+		g_clear_error (&error);
+	}
+	if (exit_idle_time > 0)
+		g_debug ("daemon shutdown set to %i seconds", exit_idle_time);
+	else
+		g_debug ("daemon will not shut down on idle");
 
 	/* override the backend name */
 	if (backend_name != NULL) {
@@ -196,7 +210,10 @@ main (int argc, char *argv[])
 	if (backend_name == NULL || g_strcmp0 (backend_name, "auto") == 0) {
 		ret  = pk_util_set_auto_backend (conf, &error);
 		if (!ret) {
-			g_printerr ("Failed to resolve auto: %s", error->message);
+			/* TRANSLATORS: The placeholder is an error message.
+			 * `auto` is a potential value of the DefaultBackend= configuration key. */
+			g_autofree gchar *message = g_strdup_printf (_("Failed to resolve auto: %s"), error->message);
+			g_printerr ("%s\n", message);
 			goto out;
 		}
 	}
@@ -219,7 +236,8 @@ main (int argc, char *argv[])
 	ret = pk_engine_load_backend (engine, &error);
 	if (!ret) {
 		/* TRANSLATORS: cannot load the backend the user specified */
-		g_printerr ("Failed to load the backend: %s", error->message);
+		g_autofree gchar *message = g_strdup_printf (_("Failed to load the backend: %s"), error->message);
+		g_printerr ("%s\n", message);
 		goto out;
 	}
 
@@ -235,6 +253,8 @@ main (int argc, char *argv[])
 		helper.loop = loop;
 		helper.timer_id = g_timeout_add_seconds (5, (GSourceFunc) pk_main_timeout_check_cb, &helper);
 		g_source_set_name_by_id (helper.timer_id, "[PkMain] main poll");
+	} else {
+		helper.timer_id = 0;
 	}
 
 	/* immediatly exit */
