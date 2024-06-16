@@ -1,3 +1,10 @@
+packagekit (1.2.8+mint1) wilma; urgency=medium
+
+  [ Michael Webster ]
+  * Add 'purge' capability (apt backend only).
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sun, 16 Jun 2024 14:54:29 +0100
+
 packagekit (1.2.8-2build3) noble; urgency=medium
 
   * No-change rebuild for CVE-2024-3094
