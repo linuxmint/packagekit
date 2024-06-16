@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PackageKit\n"
 "Report-Msgid-Bugs-To: \n"
-"Language-Team: Chinese (Taiwan) (http://www.transifex.com/freedesktop/packagekit/language/zh_TW/)\n"
+"Language-Team: Chinese (Taiwan) (http://app.transifex.com/freedesktop/packagekit/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1204,10 +1204,6 @@ msgstr "下列軟體包必須移除："
 #. TRANSLATORS: When processing, we might have to update other dependencies
 msgid "The following packages have to be updated:"
 msgstr "下列軟體包必須更新："
-
-#. TRANSLATORS: command line argument, just output without fancy formatting
-msgid "The maximum metadata cache age. Use -1 for 'never'."
-msgstr "最大的中介資料快取時限。使用 -1 代表「永不」。"
 
 #. TRANSLATORS: tell the user what package provides the command
 msgid "The package providing this file is:"

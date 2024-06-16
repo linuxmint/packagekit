@@ -1,9 +1,8 @@
+${env:deb_systemdsystemunitdir}
 debian/org.freedesktop.packagekit.pkla var/lib/polkit-1/localauthority/10-vendor.d/
 etc/PackageKit/PackageKit.conf
 etc/PackageKit/Vendor.conf
 etc/apt/apt.conf.d/20packagekit
-etc/dbus-1/system.d/org.freedesktop.PackageKit.conf
-lib/systemd/system/*
 usr/lib/*/packagekit-backend/*
 usr/lib/systemd/user/pk-debconf-helper.*
 usr/libexec/packagekit-direct
@@ -14,6 +13,8 @@ usr/share/PackageKit/helpers/apt/*
 usr/share/PackageKit/helpers/test_spawn/*
 usr/share/dbus-1/interfaces
 usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service
+usr/share/dbus-1/system.d/org.freedesktop.PackageKit.conf
 usr/share/locale/*/LC_MESSAGES/PackageKit.mo
+usr/share/metainfo/org.freedesktop.packagekit.metainfo.xml
 usr/share/polkit-1/actions/org.freedesktop.packagekit.policy
 usr/share/polkit-1/rules.d/*

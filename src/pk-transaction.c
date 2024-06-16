@@ -90,6 +90,7 @@ struct PkTransactionPrivate
 	guint			 speed;
 	guint			 download_size_remaining;
 	gboolean		 finished;
+	gboolean		 emitted_finished;
 	gboolean		 allow_cancel;
 	gboolean		 waiting_for_auth;
 	gboolean		 emit_eula_required;
@@ -291,8 +292,7 @@ pk_transaction_finish_invalidate_caches (PkTransaction *transaction)
 		goto out;
 	if (priv->role == PK_ROLE_ENUM_UPDATE_PACKAGES ||
 	    priv->role == PK_ROLE_ENUM_INSTALL_PACKAGES ||
-        priv->role == PK_ROLE_ENUM_REMOVE_PACKAGES ||
-	    priv->role == PK_ROLE_ENUM_PURGE_PACKAGES ||
+	    priv->role == PK_ROLE_ENUM_REMOVE_PACKAGES ||
 	    priv->role == PK_ROLE_ENUM_REPO_ENABLE ||
 	    priv->role == PK_ROLE_ENUM_REPO_SET_DATA ||
 	    priv->role == PK_ROLE_ENUM_REPO_REMOVE ||
@@ -511,6 +511,9 @@ pk_transaction_finished_emit (PkTransaction *transaction,
 			      PkExitEnum exit_enum,
 			      guint time_ms)
 {
+	g_assert (!transaction->priv->emitted_finished);
+	transaction->priv->emitted_finished = TRUE;
+
 	g_debug ("emitting finished '%s', %i",
 		 pk_exit_enum_to_string (exit_enum),
 		 time_ms);
@@ -907,8 +910,7 @@ pk_transaction_set_state (PkTransaction *transaction, PkTransactionState state)
 
 	/* only save into the database for useful stuff */
 	if (state == PK_TRANSACTION_STATE_READY &&
-        (priv->role == PK_ROLE_ENUM_REMOVE_PACKAGES ||
-	     priv->role == PK_ROLE_ENUM_PURGE_PACKAGES ||
+	    (priv->role == PK_ROLE_ENUM_REMOVE_PACKAGES ||
 	     priv->role == PK_ROLE_ENUM_INSTALL_PACKAGES ||
 	     priv->role == PK_ROLE_ENUM_UPDATE_PACKAGES)) {
 
@@ -1136,8 +1138,7 @@ pk_transaction_offline_finished (PkTransaction *transaction)
 		break;
 	case PK_ROLE_ENUM_UPDATE_PACKAGES:
 	case PK_ROLE_ENUM_INSTALL_PACKAGES:
-    case PK_ROLE_ENUM_REMOVE_PACKAGES:
-	case PK_ROLE_ENUM_PURGE_PACKAGES:
+	case PK_ROLE_ENUM_REMOVE_PACKAGES:
 		/* delete the file if the action affected any package
 		 * already listed in the prepared updates file */
 		pk_transaction_offline_invalidate_check (transaction);
@@ -1208,9 +1209,8 @@ pk_transaction_finished_cb (PkBackendJob *job, PkExitEnum exit_enum, PkTransacti
 
 	/* add to the database if we are going to log it */
 	if (transaction->priv->role == PK_ROLE_ENUM_UPDATE_PACKAGES ||
-        transaction->priv->role == PK_ROLE_ENUM_INSTALL_PACKAGES ||
-	    transaction->priv->role == PK_ROLE_ENUM_REMOVE_PACKAGES ||
-	    transaction->priv->role == PK_ROLE_ENUM_PURGE_PACKAGES) {
+	    transaction->priv->role == PK_ROLE_ENUM_INSTALL_PACKAGES ||
+	    transaction->priv->role == PK_ROLE_ENUM_REMOVE_PACKAGES) {
 		g_autoptr(GPtrArray) array = NULL;
 		g_autofree gchar *packages = NULL;
 
@@ -1226,7 +1226,6 @@ pk_transaction_finished_cb (PkBackendJob *job, PkExitEnum exit_enum, PkTransacti
 			item = g_ptr_array_index (array, i);
 			info = pk_package_get_info (item);
 			if (info == PK_INFO_ENUM_REMOVING ||
-                info == PK_INFO_ENUM_PURGING ||
 			    info == PK_INFO_ENUM_INSTALLING ||
 			    info == PK_INFO_ENUM_UPDATING) {
 				syslog (LOG_DAEMON | LOG_DEBUG,
@@ -2305,14 +2304,6 @@ pk_transaction_run (PkTransaction *transaction)
 					    priv->cached_allow_deps,
 					    priv->cached_autoremove);
 		break;
-    case PK_ROLE_ENUM_PURGE_PACKAGES:
-        pk_backend_purge_packages (priv->backend,
-                        priv->job,
-                        priv->cached_transaction_flags,
-                        priv->cached_package_ids,
-                        priv->cached_allow_deps,
-                        priv->cached_autoremove);
-        break;
 	case PK_ROLE_ENUM_UPDATE_PACKAGES:
 		pk_backend_update_packages (priv->backend,
 					    priv->job,
@@ -2493,7 +2484,7 @@ pk_transaction_strvalidate (const gchar *text, GError **error)
 				     "Invalid input passed to daemon: zero length string");
 		return FALSE;
 	}
-	if (length > 1024) {
+	if (length >= 1024) {
 		g_set_error (error, PK_TRANSACTION_ERROR, PK_TRANSACTION_ERROR_INPUT_INVALID,
 			     "Invalid input passed to daemon: input too long: %u", length);
 		return FALSE;
@@ -2545,7 +2536,7 @@ pk_transaction_search_check_item (const gchar *values, GError **error)
 				     "Invalid search containing '?'");
 		return FALSE;
 	}
-	if (size == 1024) {
+	if (size >= 1024) {
 		g_set_error_literal (error,
 				     PK_TRANSACTION_ERROR,
 				     PK_TRANSACTION_ERROR_SEARCH_INVALID,
@@ -2856,8 +2847,7 @@ pk_transaction_role_to_actions (PkRoleEnum role, guint64 transaction_flags)
 		case PK_ROLE_ENUM_REFRESH_CACHE:
 			policy = "org.freedesktop.packagekit.system-sources-refresh";
 			break;
-        case PK_ROLE_ENUM_REMOVE_PACKAGES:
-		case PK_ROLE_ENUM_PURGE_PACKAGES:
+		case PK_ROLE_ENUM_REMOVE_PACKAGES:
 			policy = "org.freedesktop.packagekit.package-remove";
 			break;
 		case PK_ROLE_ENUM_INSTALL_PACKAGES:
@@ -2967,8 +2957,7 @@ pk_transaction_set_role (PkTransaction *transaction, PkRoleEnum role)
 	/* always set transaction exclusive for some actions (improves performance) */
 	if (role == PK_ROLE_ENUM_INSTALL_FILES ||
 	    role == PK_ROLE_ENUM_INSTALL_PACKAGES ||
-        role == PK_ROLE_ENUM_REMOVE_PACKAGES ||
-	    role == PK_ROLE_ENUM_PURGE_PACKAGES ||
+	    role == PK_ROLE_ENUM_REMOVE_PACKAGES ||
 	    role == PK_ROLE_ENUM_UPDATE_PACKAGES ||
 	    role == PK_ROLE_ENUM_UPGRADE_SYSTEM ||
 	    role == PK_ROLE_ENUM_REPAIR_SYSTEM) {
@@ -4333,80 +4322,6 @@ out:
 }
 
 static void
-pk_transaction_purge_packages (PkTransaction *transaction,
-                GVariant *params,
-                GDBusMethodInvocation *context)
-{
-    gboolean ret;
-    gboolean allow_deps;
-    gboolean autoremove;
-    PkBitfield transaction_flags;
-    g_autoptr(GError) error = NULL;
-    g_autofree gchar **package_ids = NULL;
-    g_autofree gchar *package_ids_temp = NULL;
-    g_autofree gchar *transaction_flags_temp = NULL;
-
-    g_return_if_fail (PK_IS_TRANSACTION (transaction));
-    g_return_if_fail (transaction->priv->tid != NULL);
-
-    g_variant_get (params, "(t^a&sbb)",
-               &transaction_flags,
-               &package_ids,
-               &allow_deps,
-               &autoremove);
-
-    package_ids_temp = pk_package_ids_to_string (package_ids);
-    transaction_flags_temp = pk_transaction_flag_bitfield_to_string (transaction_flags);
-    g_debug ("PurgePackages method called: %s, %i, %i (transaction_flags: %s)",
-         package_ids_temp, allow_deps, autoremove, transaction_flags_temp);
-
-    /* not implemented yet */
-    if (!pk_backend_is_implemented (transaction->priv->backend,
-                    PK_ROLE_ENUM_PURGE_PACKAGES)) {
-        g_set_error (&error,
-                 PK_TRANSACTION_ERROR,
-                 PK_TRANSACTION_ERROR_NOT_SUPPORTED,
-                 "PurgePackages not supported by backend");
-        pk_transaction_set_state (transaction, PK_TRANSACTION_STATE_ERROR);
-        goto out;
-    }
-
-    /* check package_ids */
-    ret = pk_package_ids_check (package_ids);
-    if (!ret) {
-        g_set_error (&error,
-                 PK_TRANSACTION_ERROR,
-                 PK_TRANSACTION_ERROR_PACKAGE_ID_INVALID,
-                 "The package id's '%s' are not valid", package_ids_temp);
-        pk_transaction_set_state (transaction, PK_TRANSACTION_STATE_ERROR);
-        goto out;
-    }
-
-    /* save so we can run later */
-    transaction->priv->cached_transaction_flags = transaction_flags;
-    transaction->priv->cached_package_ids = g_strdupv (package_ids);
-    transaction->priv->cached_allow_deps = allow_deps;
-    transaction->priv->cached_autoremove = autoremove;
-    pk_transaction_set_role (transaction, PK_ROLE_ENUM_PURGE_PACKAGES);
-
-    /* this changed */
-    pk_transaction_emit_property_changed (transaction,
-                          "TransactionFlags",
-                          g_variant_new_uint64 (transaction_flags));
-
-    /* try to get authorization */
-    ret = pk_transaction_obtain_authorization (transaction,
-                           PK_ROLE_ENUM_PURGE_PACKAGES,
-                           &error);
-    if (!ret) {
-        pk_transaction_set_state (transaction, PK_TRANSACTION_STATE_ERROR);
-        goto out;
-    }
-out:
-    pk_transaction_dbus_return (context, error);
-}
-
-static void
 pk_transaction_repo_enable (PkTransaction *transaction,
 			    GVariant *params,
 			    GDBusMethodInvocation *context)
@@ -4967,6 +4882,22 @@ pk_transaction_set_hint (PkTransaction *transaction,
 		return TRUE;
 	}
 
+	/* details-with-deps-size=true */
+	if (g_strcmp0 (key, "details-with-deps-size") == 0) {
+		if (g_strcmp0 (value, "true") == 0) {
+			pk_backend_job_set_details_with_deps_size (priv->job, TRUE);
+		} else if (g_strcmp0 (value, "false") == 0) {
+			pk_backend_job_set_details_with_deps_size (priv->job, FALSE);
+		} else {
+			g_set_error (error,
+				     PK_TRANSACTION_ERROR,
+				     PK_TRANSACTION_ERROR_NOT_SUPPORTED,
+				      "details-with-deps-size hint expects true or false, not %s", value);
+			return FALSE;
+		}
+		return TRUE;
+	}
+
 	/* Is the plural Packages signal supported? The key’s value is ignored,
 	 * as clients will only send it if it’s true. */
 	if (g_strcmp0 (key, "supports-plural-signals") == 0) {
@@ -5301,6 +5232,11 @@ pk_transaction_get_property (GDBusConnection *connection_, const gchar *sender,
 		return g_variant_new_uint64 (priv->download_size_remaining);
 	if (g_strcmp0 (property_name, "TransactionFlags") == 0)
 		return g_variant_new_uint64 (priv->cached_transaction_flags);
+	if (g_strcmp0 (property_name, "RemainingTime") == 0)
+		return g_variant_new_uint32 (priv->remaining_time);
+
+	g_set_error (error, G_DBUS_ERROR, G_DBUS_ERROR_UNKNOWN_PROPERTY,
+		     "Unknown transaction property ‘%s’", property_name);
 	return NULL;
 }
 
@@ -5412,10 +5348,6 @@ pk_transaction_method_call (GDBusConnection *connection_, const gchar *sender,
 		pk_transaction_remove_packages (transaction, parameters, invocation);
 		return;
 	}
-    if (g_strcmp0 (method_name, "PurgePackages") == 0) {
-        pk_transaction_purge_packages (transaction, parameters, invocation);
-        return;
-    }
 	if (g_strcmp0 (method_name, "RepoEnable") == 0) {
 		pk_transaction_repo_enable (transaction, parameters, invocation);
 		return;
@@ -5592,6 +5524,12 @@ pk_transaction_dispose (GObject *object)
 	}
 
 	if (transaction->priv->registration_id > 0) {
+		/* We should have emitted ::Finished if the object was ever registered and committed */
+		if (transaction->priv->state != PK_TRANSACTION_STATE_UNKNOWN &&
+		    transaction->priv->state != PK_TRANSACTION_STATE_ERROR &&
+		    transaction->priv->state != PK_TRANSACTION_STATE_NEW)
+			g_assert (transaction->priv->emitted_finished);
+
 		g_dbus_connection_unregister_object (transaction->priv->connection,
 						     transaction->priv->registration_id);
 		transaction->priv->registration_id = 0;

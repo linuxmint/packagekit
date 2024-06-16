@@ -109,7 +109,6 @@ bool AptJob::init(gchar **localDebs)
     case PK_ROLE_ENUM_INSTALL_PACKAGES:
     case PK_ROLE_ENUM_INSTALL_FILES:
     case PK_ROLE_ENUM_REMOVE_PACKAGES:
-    case PK_ROLE_ENUM_PURGE_PACKAGES:
     case PK_ROLE_ENUM_UPDATE_PACKAGES:
         withLock = true;
         break;
@@ -567,8 +566,9 @@ void AptJob::emitUpdates(PkgList &output, PkBitfield filters)
         std::string origin  = vf.File().Origin() == NULL ? "" : vf.File().Origin();
         std::string archive = vf.File().Archive() == NULL ? "" : vf.File().Archive();
         std::string label   = vf.File().Label() == NULL ? "" : vf.File().Label();
+
         if (origin.compare("Debian") == 0 ||
-                origin.compare("Ubuntu") == 0) {
+            origin.compare("Ubuntu") == 0) {
             if (ends_with(archive, "-security") ||
                     label.compare("Debian-Security") == 0) {
                 state = PK_INFO_ENUM_SECURITY;
@@ -1279,7 +1279,7 @@ PkgList AptJob::searchPackageFiles(gchar **values)
         }
 
         if (!search.empty()) {
-            search.append("|");
+            search.append("\\|");
         }
 
         if (value[0] == '/') {
@@ -1461,16 +1461,25 @@ void AptJob::providesMimeType(PkgList &output, gchar **values)
 
     /* search for mimetypes for all values */
     for (guint i = 0; values[i] != NULL; i++) {
+#if AS_CHECK_VERSION(1,0,0)
+        g_autoptr(AsComponentBox) result = NULL;
+#else
         g_autoptr(GPtrArray) result = NULL;
-
+#endif
         if (m_cancel)
             break;
 
+#if AS_CHECK_VERSION(1,0,0)
+        result = as_pool_get_components_by_provided_item (pool, AS_PROVIDED_KIND_MEDIATYPE, values[i]);
+        for (guint j = 0; j < as_component_box_len (result); j++) {
+            const gchar *pkgname;
+            AsComponent *cpt = as_component_box_index (result, j);
+#else
         result = as_pool_get_components_by_provided_item (pool, AS_PROVIDED_KIND_MEDIATYPE, values[i]);
         for (guint j = 0; j < result->len; j++) {
             const gchar *pkgname;
             AsComponent *cpt = AS_COMPONENT (g_ptr_array_index (result, j));
-
+#endif
             /* sanity check */
             pkgname = as_component_get_pkgname (cpt);
             if (pkgname == NULL) {
@@ -2063,22 +2072,6 @@ void AptJob::updateInterface(int fd, int writeFd, bool *errorEmitted)
                         emitPackage(ver, PK_INFO_ENUM_REMOVING);
                         emitPackageProgress(ver, PK_STATUS_ENUM_REMOVE, m_lastSubProgress);
                     }
-                } else if (starts_with(str, "Purging")) {
-                    // cout << "Found Removing! " << line << endl;
-                    if (m_lastSubProgress >= 100 && !m_lastPackage.empty()) {
-                        // cout << "FINISH the last package: " << m_lastPackage << endl;
-                        const pkgCache::VerIterator &ver = findTransactionPackage(m_lastPackage);
-                        if (!ver.end()) {
-                            emitPackage(ver, PK_INFO_ENUM_FINISHED);
-                        }
-                    }
-                    m_lastSubProgress += 25;
-
-                    const pkgCache::VerIterator &ver = findTransactionPackage(pkg);
-                    if (!ver.end()) {
-                        emitPackage(ver, PK_INFO_ENUM_PURGING);
-                        emitPackageProgress(ver, PK_STATUS_ENUM_PURGE, m_lastSubProgress);
-                    }
                 } else if (starts_with(str, "Installed") ||
                            starts_with(str, "Removed")) {
                     // cout << "Found FINISHED! " << line << endl;
@@ -2266,7 +2259,7 @@ PkgList AptJob::resolveLocalFiles(gchar **localDebs)
     return ret;
 }
 
-bool AptJob::runTransaction(const PkgList &install, const PkgList &remove, const PkgList &purge, const PkgList &update,
+bool AptJob::runTransaction(const PkgList &install, const PkgList &remove, const PkgList &update,
                              bool fixBroken, PkBitfield flags, bool autoremove)
 {
     pk_backend_job_set_status (m_job, PK_STATUS_ENUM_RUNNING);
@@ -2330,14 +2323,7 @@ bool AptJob::runTransaction(const PkgList &install, const PkgList &remove, const
             if (m_cancel)
                 break;
 
-            m_cache->tryToRemove(Fix, pkInfo, false);
-        }
-
-        for (const PkgInfo &pkInfo : purge) {
-             if (m_cancel)
-                 break;
- 
-            m_cache->tryToRemove(Fix, pkInfo, true);
+            m_cache->tryToRemove(Fix, pkInfo);
         }
 
         // Call the scored problem resolver
@@ -2360,7 +2346,7 @@ bool AptJob::runTransaction(const PkgList &install, const PkgList &remove, const
         for (pkgCache::PkgIterator pkg = (*m_cache)->PkgBegin(); ! pkg.end(); ++pkg) {
             const pkgCache::VerIterator &ver = pkg.CurrentVer();
             if (!ver.end() && !initial_garbage.contains(pkg) && m_cache->isGarbage(pkg))
-                m_cache->tryToRemove (Fix, PkgInfo(ver), purge.size() > 0);
+                m_cache->tryToRemove (Fix, PkgInfo(ver));
         }
     }
 

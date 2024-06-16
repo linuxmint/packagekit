@@ -100,6 +100,7 @@ struct PkBackendJobPrivate
 	gboolean		 allow_cancel;
 	gboolean		 background;
 	gboolean		 interactive;
+	gboolean		 details_with_deps_size;
 	gboolean		 locked;
 	GHashTable		*emitted;
 	PkErrorEnum		 last_error_code;
@@ -443,7 +444,7 @@ pk_backend_job_set_cache_age (PkBackendJob *job, guint cache_age)
 	if (cache_age != G_MAXUINT && cache_age > cache_age_offset)
 		cache_age -= cache_age_offset;
 
-	g_debug ("cache-age changed to %u", cache_age);
+	g_debug ("cache-age changed to %u seconds", cache_age);
 	job->priv->cache_age = cache_age;
 }
 
@@ -480,6 +481,20 @@ pk_backend_job_set_interactive (PkBackendJob *job, gboolean interactive)
 {
 	g_return_if_fail (PK_IS_BACKEND_JOB (job));
 	job->priv->interactive = interactive;
+}
+
+gboolean
+pk_backend_job_get_details_with_deps_size (PkBackendJob *job)
+{
+	g_return_val_if_fail (PK_IS_BACKEND_JOB (job), FALSE);
+	return job->priv->details_with_deps_size;
+}
+
+void
+pk_backend_job_set_details_with_deps_size (PkBackendJob *job, gboolean details_with_deps_size)
+{
+	g_return_if_fail (PK_IS_BACKEND_JOB (job));
+	job->priv->details_with_deps_size = details_with_deps_size;
 }
 
 PkRoleEnum
@@ -943,8 +958,7 @@ pk_backend_job_set_status (PkBackendJob *job, PkStatusEnum status)
 		case PK_STATUS_ENUM_DOWNLOAD:
 		case PK_STATUS_ENUM_UPDATE:
 		case PK_STATUS_ENUM_INSTALL:
-        case PK_STATUS_ENUM_REMOVE:
-		case PK_STATUS_ENUM_PURGE:
+		case PK_STATUS_ENUM_REMOVE:
 		case PK_STATUS_ENUM_CLEANUP:
 		case PK_STATUS_ENUM_OBSOLETE:
 			return;
@@ -1021,8 +1035,6 @@ pk_backend_job_package_full (PkBackendJob *job,
 		pk_backend_job_set_status (job, PK_STATUS_ENUM_INSTALL);
 	else if (info == PK_INFO_ENUM_REMOVING)
 		pk_backend_job_set_status (job, PK_STATUS_ENUM_REMOVE);
-    else if (info == PK_INFO_ENUM_PURGING)
-        pk_backend_job_set_status (job, PK_STATUS_ENUM_PURGE);
 	else if (info == PK_INFO_ENUM_CLEANUP)
 		pk_backend_job_set_status (job, PK_STATUS_ENUM_CLEANUP);
 	else if (info == PK_INFO_ENUM_OBSOLETING)

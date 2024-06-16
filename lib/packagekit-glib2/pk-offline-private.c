@@ -417,7 +417,6 @@ pk_offline_get_prepared_upgrade (gchar **name, gchar **release_ver, GError **err
 gboolean
 pk_offline_auth_set_results (PkResults *results, GError **error)
 {
-	guint i;
 	PkPackage *package;
 	PkRoleEnum role;
 	g_autoptr(GError) error_local = NULL;
@@ -463,19 +462,26 @@ pk_offline_auth_set_results (PkResults *results, GError **error)
 	packages = pk_results_get_package_array (results);
 	if (packages->len > 0) {
 		g_autoptr(GString) string = NULL;
+		g_autoptr(GHashTable) known_pkgids = g_hash_table_new (g_str_hash, g_str_equal);
+
 		string = g_string_new ("");
-		for (i = 0; i < packages->len; i++) {
+		for (guint i = 0; i < packages->len; i++) {
+			const gchar *pkgid;
 			package = g_ptr_array_index (packages, i);
 			switch (pk_package_get_info (package)) {
 			case PK_INFO_ENUM_UPDATING:
 			case PK_INFO_ENUM_INSTALLING:
-				g_string_append_printf (string, "%s,",
-							pk_package_get_id (package));
+				pkgid = pk_package_get_id (package);
+
+				/* deduplicate entries in case the backend has emitted them multiple times */
+				if (g_hash_table_add (known_pkgids, (gpointer) pkgid))
+					g_string_append_printf (string, "%s,", pkgid);
 				break;
 			default:
 				break;
 			}
 		}
+
 		if (string->len > 0)
 			g_string_set_size (string, string->len - 1);
 		g_key_file_set_string (key_file,

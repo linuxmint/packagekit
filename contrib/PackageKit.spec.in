@@ -12,6 +12,7 @@ Requires: %{name}-glib%{?_isa} = %{version}-%{release}
 Requires: shared-mime-info
 Requires: systemd
 
+BuildRequires: python3-devel
 BuildRequires: glib2-devel >= 2.46.0
 BuildRequires: xmlto
 BuildRequires: gtk-doc
@@ -36,7 +37,7 @@ BuildRequires: bash-completion
 
 %if !0%{?rhel}
 BuildRequires: rpm-devel >= 4.11.0
-BuildRequires: libappstream-glib-devel
+BuildRequires: appstream-devel
 BuildRequires: librepo-devel >= 1.1.5
 BuildRequires: libsolv-devel
 BuildRequires: libdnf-devel >= 0.7.0
@@ -199,6 +200,8 @@ popd > /dev/null
 %{_datadir}/PackageKit/helpers/test_spawn/search-name.sh
 %{_libexecdir}/packagekitd
 %{_libexecdir}/packagekit-direct
+%{_libexecdir}/packagekit-dnf-refresh-repo
+%pycached %{python3_sitelib}/dnf-plugins/notify_packagekit.py
 %{_bindir}/pkmon
 %{_bindir}/pkcon
 %exclude %{_libdir}/libpackagekit*.so.*

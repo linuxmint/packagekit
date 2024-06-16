@@ -1,12 +1,14 @@
 Source: packagekit
 Section: admin
 Priority: optional
-Maintainer: Matthias Klumpp <mak@debian.org>
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Matthias Klumpp <mak@debian.org>
 Uploaders: Julian Andres Klode <jak@debian.org>
 Build-Depends: bash-completion,
                debhelper-compat (= 13),
                gir1.2-glib-2.0 (>= 1.36),
                gobject-introspection (>= 1.36),
+               gobject-introspection-bin,
                gtk-doc-tools,
                libappstream-dev (>= 0.16.0),
                libapt-pkg-dev (>= 1.9.2),
@@ -20,8 +22,9 @@ Build-Depends: bash-completion,
                libsqlite3-dev,
                libsystemd-dev (>= 214) [linux-any],
                meson (>= 0.50),
-               pkg-config,
+               pkgconf,
                polkitd,
+               systemd-dev [linux-any],
                valac
 Standards-Version: 4.6.2
 Rules-Requires-Root: no
@@ -49,10 +52,10 @@ Description: Provides a package management service
  the corresponding distribution. PackageKit is not meant to replace
  advanced tools like Synaptic.
  .
- The main benefits are:
-  - unified interface on several distributions
-  - fine grained privileges by using PolicyKit
-  - independency from a running desktop session during the processing
+ Its main benefits are:
+  - Unified developer and user interface on many distributions
+  - Fine-grained permission control via PolicyKit
+  - On-demand installation of missing system components
 
 Package: packagekit-tools
 Architecture: any

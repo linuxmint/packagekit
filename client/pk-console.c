@@ -712,8 +712,7 @@ pk_console_finished_cb (GObject *object, GAsyncResult *res, gpointer data)
 	if (!ctx->is_console ||
 	    (role != PK_ROLE_ENUM_INSTALL_PACKAGES &&
 	     role != PK_ROLE_ENUM_UPDATE_PACKAGES &&
-         role != PK_ROLE_ENUM_REMOVE_PACKAGES &&
-	     role != PK_ROLE_ENUM_PURGE_PACKAGES &&
+	     role != PK_ROLE_ENUM_REMOVE_PACKAGES &&
 	     filename == NULL)) {
 		g_ptr_array_foreach (array, (GFunc) pk_console_package_cb, ctx);
 	}
@@ -1092,35 +1091,6 @@ pk_console_remove_packages (PkConsoleCtx *ctx, gchar **packages, gboolean autore
 }
 
 static gboolean
-pk_console_purge_packages (PkConsoleCtx *ctx, gchar **packages, gboolean autoremove, GError **error)
-{
-	g_autoptr(GError) error_local = NULL;
-	g_auto(GStrv) package_ids = NULL;
-
-	pk_bitfield_add (ctx->filters, PK_FILTER_ENUM_INSTALLED);
-	package_ids = pk_console_resolve_packages (ctx, packages, &error_local);
-	if (package_ids == NULL) {
-		g_set_error (error,
-			     PK_CONSOLE_ERROR,
-			     PK_ERROR_ENUM_INTERNAL_ERROR,
-			     /* TRANSLATORS: There was an error getting the list
-			      * of files for the package. The detailed error follows */
-			     _("This tool could not find the installed package: %s"),
-			     error_local->message);
-		return FALSE;
-	}
-
-	/* do the async action */
-	pk_task_purge_packages_async (PK_TASK (ctx->task),
-				       package_ids,
-				       TRUE, autoremove,
-				       ctx->cancellable,
-				       pk_console_progress_cb, ctx,
-				       pk_console_finished_cb, ctx);
-	return TRUE;
-}
-
-static gboolean
 pk_console_download_packages (PkConsoleCtx *ctx, gchar **packages, const gchar *directory, GError **error)
 {
 	g_autoptr(GError) error_local = NULL;
@@ -1183,7 +1153,7 @@ static gboolean
 pk_console_update_system_filter_helper (PkPackage *package, gpointer user_data)
 {
 	PkInfoEnum package_enum = pk_package_get_info (package);
-	return (package_enum != PK_INFO_ENUM_OBSOLETING && package_enum != PK_INFO_ENUM_REMOVING && package_enum != PK_INFO_ENUM_PURGING);
+	return (package_enum != PK_INFO_ENUM_OBSOLETING && package_enum != PK_INFO_ENUM_REMOVING);
 }
 
 static gboolean
@@ -1479,10 +1449,8 @@ pk_console_get_summary (PkConsoleCtx *ctx)
 		g_string_append_printf (string, "  %s\n", "install-sig [type] [key_id] [package_id]");
 	if (pk_bitfield_contain (ctx->roles, PK_ROLE_ENUM_REMOVE_PACKAGES))
 		g_string_append_printf (string, "  %s\n", "remove [package]");
-	if (pk_bitfield_contain (ctx->roles, PK_ROLE_ENUM_PURGE_PACKAGES))
-		g_string_append_printf (string, "  %s\n", "purge [package]");
 	if (pk_bitfield_contain (ctx->roles, PK_ROLE_ENUM_UPDATE_PACKAGES))
-		g_string_append_printf (string, "  %s\n", "update <package>");
+		g_string_append_printf (string, "  %s\n", "update [package]");
 	if (pk_bitfield_contain (ctx->roles, PK_ROLE_ENUM_REFRESH_CACHE))
 		g_string_append_printf (string, "  %s\n", "refresh [force]");
 	if (pk_bitfield_contain (ctx->roles, PK_ROLE_ENUM_RESOLVE))
@@ -1703,7 +1671,7 @@ main (int argc, char *argv[])
 			_("Print to screen a machine readable output, rather than using animated widgets"), NULL},
 		{ "cache-age", 'c', 0, G_OPTION_ARG_INT, &cache_age,
 			/* TRANSLATORS: command line argument, just output without fancy formatting */
-			_("The maximum metadata cache age. Use -1 for 'never'."), NULL},
+			_("The maximum metadata cache age (in seconds). Use -1 to use only cache, 1 to reload cache."), NULL},
 		{ "allow-untrusted", '\0', 0, G_OPTION_ARG_NONE, &allow_untrusted,
 			/* command line argument, do we ask questions */
 			_("Allow untrusted packages to be installed."), NULL },
@@ -1983,17 +1951,7 @@ main (int argc, char *argv[])
 			goto out;
 		}
 		run_mainloop = pk_console_remove_packages (ctx, argv + 2, autoremove, &error);
-	} else if (strcmp (mode, "purge") == 0) {
-		if (value == NULL) {
-			error = g_error_new (PK_CONSOLE_ERROR,
-					     PK_ERROR_ENUM_INTERNAL_ERROR,
-					     /* TRANSLATORS: the user did not
-					      * specify what they wanted to remove */
-					     "%s", _("A package name to remove is required"));
-			ctx->retval = PK_EXIT_CODE_SYNTAX_INVALID;
-			goto out;
-		}
-		run_mainloop = pk_console_purge_packages (ctx, argv + 2, autoremove, &error);
+
 	} else if (strcmp (mode, "download") == 0) {
 		if (value == NULL || details == NULL) {
 			error = g_error_new (PK_CONSOLE_ERROR,

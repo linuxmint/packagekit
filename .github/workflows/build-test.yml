@@ -1,0 +1,31 @@
+name: Build Test
+
+on: [push, pull_request]
+
+jobs:
+  build-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        distro:
+          - fedora
+          - debian
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create Build Environment
+        run: podman build -t packagekit-${{ matrix.distro }} -f tests/ci/Dockerfile-${{ matrix.distro }} .
+
+      - name: Build & Test [DNF]
+        run: podman run -t -v `pwd`:/build packagekit-${{ matrix.distro }}
+             ./tests/ci/build-and-test.sh -Dpackaging_backend=dnf
+        if: ${{ matrix.distro == 'fedora' }}
+
+      - name: Build & Test [APT]
+        run: podman run -t -v `pwd`:/build packagekit-${{ matrix.distro }}
+             ./tests/ci/build-and-test.sh -Dpackaging_backend=apt
+        if: ${{ matrix.distro == 'debian' }}

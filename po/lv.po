@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PackageKit\n"
 "Report-Msgid-Bugs-To: \n"
-"Language-Team: Latvian (http://www.transifex.com/freedesktop/packagekit/language/lv/)\n"
+"Language-Team: Latvian (http://app.transifex.com/freedesktop/packagekit/language/lv/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -976,10 +976,6 @@ msgstr "Jāizņem sekojošās pakotnes:"
 #. TRANSLATORS: When processing, we might have to update other dependencies
 msgid "The following packages have to be updated:"
 msgstr "Jāuzlabo sekojošās pakotnes:"
-
-#. TRANSLATORS: command line argument, just output without fancy formatting
-msgid "The maximum metadata cache age. Use -1 for 'never'."
-msgstr "Maksimālais metadatu pieglabāšanas laiks. Lietojiet -1 opcijai 'never' (nekad)."
 
 #. TRANSLATORS: tell the user what package provides the command
 msgid "The package providing this file is:"

@@ -8,7 +8,7 @@
 # Christian <Christian.Kirbach@googlemail.com>, 2009,2011
 # Daniela Kugelmann <dkugelma@redhat.com >, 2008
 # 5527760c8f29b02a470a5ee3b26b73e8_231f8d9 <ceb449f1811ff367b2235286902d5d43_32261>, 2012-2013
-# Ettore Atalan <atalanttore@googlemail.com>, 2014-2015,2017-2018
+# Ettore Atalan <atalanttore@googlemail.com>, 2014-2015,2017-2018,2022-2023
 # Fabian Affolter <fab@fedoraproject.org>, 2008-2009
 # hpeters <hpeters@redhat.com>, 2009
 # Holger Wansing <linux@wansing-online.de>, 2006
@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PackageKit\n"
 "Report-Msgid-Bugs-To: \n"
-"Language-Team: German (http://www.transifex.com/freedesktop/packagekit/language/de/)\n"
+"Language-Team: German (http://app.transifex.com/freedesktop/packagekit/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -318,6 +318,9 @@ msgstr "Befehl nicht gefunden, gültige Befehle sind:"
 msgid "Committing changes"
 msgstr "Änderungen werden gespeichert"
 
+msgid "Config file was not found."
+msgstr "Konfigurationsdatei wurde nicht gefunden."
+
 #. TRANSLATORS: transaction state, we are copying package files before or
 #. after the transaction
 msgid "Copying files"
@@ -480,9 +483,19 @@ msgstr "Die Pakete konnten nicht installiert werden"
 msgid "Failed to launch:"
 msgstr "Start ist fehlgeschlagen:"
 
+#. TRANSLATORS: The placeholder is an error message
+#, c-format
+msgid "Failed to load config file: %s"
+msgstr "Konfigurationsdatei konnte nicht geladen werden: %s"
+
 #. TRANSLATORS: cannot load the backend the user specified
 msgid "Failed to load the backend"
 msgstr "Fehler beim Laden des Backends"
+
+#. TRANSLATORS: cannot load the backend the user specified
+#, c-format
+msgid "Failed to load the backend: %s"
+msgstr "Backend konnte nicht geladen werden: %s"
 
 #. TRANSLATORS: probably not yet installed
 msgid "Failed to load the config file"
@@ -495,6 +508,12 @@ msgstr "Fehler beim Parsen der Argumente"
 #. TRANSLATORS: we failed to contact the daemon
 msgid "Failed to parse command line"
 msgstr "Verarbeiten der Befehlszeile schlug fehl"
+
+#. TRANSLATORS: The placeholder is an error message.
+#. * `auto` is a potential value of the DefaultBackend= configuration key.
+#, c-format
+msgid "Failed to resolve auto: %s"
+msgstr "auto konnte nicht aufgelöst werden: %s"
 
 #. TRANSLATORS: we failed to find the package, this shouldn't happen
 msgid "Failed to search for file"
@@ -1219,10 +1238,6 @@ msgstr "Die folgenden Pakete müssen entfernt werden:"
 msgid "The following packages have to be updated:"
 msgstr "Die folgenden Pakete müssen aktualisiert werden:"
 
-#. TRANSLATORS: command line argument, just output without fancy formatting
-msgid "The maximum metadata cache age. Use -1 for 'never'."
-msgstr "Das Höchstalter des Metadaten-Zwischenspeichers. Verwenden Sie -1 für »keines«."
-
 #. TRANSLATORS: tell the user what package provides the command
 msgid "The package providing this file is:"
 msgstr "Das folgende Paket stellt diese Datei bereit:"
@@ -1230,6 +1245,11 @@ msgstr "Das folgende Paket stellt diese Datei bereit:"
 #. TRANSLATORS: The network settings could not be sent
 msgid "The proxy could not be set"
 msgstr "Der Proxy konnte nicht festgelegt werden"
+
+#. TRANSLATORS: There was an error finding a package
+#. * for installation, it may already be installed.
+msgid "The selected packages may already be installed."
+msgstr "Die ausgewählten Pakete sind möglicherweise bereits installiert."
 
 #. TRANSLATORS: tell the user we've not done anything
 msgid "The signature was not accepted."
@@ -1276,6 +1296,10 @@ msgstr "Derzeit sind keine Systemaktualisierungen verfügbar."
 #, c-format
 msgid "This tool could not find all the packages: %s"
 msgstr "Dieses Werkzeug konnte nicht alle Pakete finden: %s"
+
+#. TRANSLATORS: We were unable to find a package for installation.
+msgid "This tool could not find any available package."
+msgstr "Dieses Werkzeug konnte kein verfügbares Paket finden."
 
 #. TRANSLATORS: There was an error finding a package
 #. * for installation. The detailed error follows.

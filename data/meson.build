@@ -9,7 +9,7 @@ dbus_config_data.set('libexecdir', join_paths(get_option('prefix'), get_option('
 
 dbus_sys_dir = get_option('dbus_sys')
 if dbus_sys_dir == ''
-  dbus_sys_dir = join_paths(get_option('sysconfdir'), 'dbus-1', 'system.d')
+  dbus_sys_dir = join_paths(get_option('datadir'), 'dbus-1', 'system.d')
 endif
 
 configure_file(
@@ -60,6 +60,23 @@ if get_option('systemd')
         )
     endif
   endif
+endif
+
+# Validate & install MetaInfo file
+metainfo_file = files('org.freedesktop.packagekit.metainfo.xml')
+install_data(
+  metainfo_file,
+  install_dir:join_paths(get_option('datadir'), 'metainfo'),
+)
+ascli_exe = find_program('appstreamcli', required: false)
+if ascli_exe.found()
+  test('validate metainfo file',
+        ascli_exe,
+        args: ['validate',
+               '--no-net',
+               '--pedantic',
+               metainfo_file]
+  )
 endif
 
 install_data(

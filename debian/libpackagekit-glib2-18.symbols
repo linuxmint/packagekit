@@ -36,6 +36,7 @@ libpackagekit-glib2.so.18 libpackagekit-glib2-18 #MINVER#
  pk_client_get_details_async@Base 0.9.4
  pk_client_get_details_local@Base 0.9.4
  pk_client_get_details_local_async@Base 0.9.4
+ pk_client_get_details_with_deps_size@Base 1.2.7
  pk_client_get_distro_upgrades@Base 0.9.4
  pk_client_get_distro_upgrades_async@Base 0.9.4
  pk_client_get_files@Base 0.9.4
@@ -98,6 +99,7 @@ libpackagekit-glib2.so.18 libpackagekit-glib2-18 #MINVER#
  pk_client_search_names_async@Base 0.9.4
  pk_client_set_background@Base 0.9.4
  pk_client_set_cache_age@Base 0.9.4
+ pk_client_set_details_with_deps_size@Base 1.2.7
  pk_client_set_interactive@Base 0.9.4
  pk_client_set_locale@Base 0.9.4
  pk_client_state_get_type@Base 1.2.4

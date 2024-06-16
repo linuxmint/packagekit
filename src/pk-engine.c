@@ -686,7 +686,7 @@ pk_engine_set_proxy (PkEngine *engine,
 
 	/* check length of http */
 	len = pk_strlen (proxy_http, 1024);
-	if (len == 1024) {
+	if (len >= 1024) {
 		error = g_error_new_literal (PK_ENGINE_ERROR,
 					     PK_ENGINE_ERROR_CANNOT_SET_PROXY,
 					     "http proxy was too long");
@@ -696,7 +696,7 @@ pk_engine_set_proxy (PkEngine *engine,
 
 	/* check length of ftp */
 	len = pk_strlen (proxy_ftp, 1024);
-	if (len == 1024) {
+	if (len >= 1024) {
 		error = g_error_new_literal (PK_ENGINE_ERROR,
 					     PK_ENGINE_ERROR_CANNOT_SET_PROXY,
 					     "ftp proxy was too long");
@@ -919,7 +919,7 @@ pk_engine_network_state_changed_cb (GNetworkMonitor *network_monitor,
 static void
 pk_engine_setup_file_monitors (PkEngine *engine)
 {
-	const gchar *filename = "/etc/PackageKit/PackageKit.conf";
+	const gchar *filename = SYSCONFDIR "/PackageKit/PackageKit.conf";
 	g_autoptr(GError) error = NULL;
 	g_autoptr(GFile) file_binary = NULL;
 	g_autoptr(GFile) file_conf = NULL;
@@ -1148,8 +1148,7 @@ pk_engine_is_package_history_interesing (PkPackage *package)
 
 	switch (pk_package_get_info (package)) {
 	case PK_INFO_ENUM_INSTALLING:
-    case PK_INFO_ENUM_REMOVING:
-	case PK_INFO_ENUM_PURGING:
+	case PK_INFO_ENUM_REMOVING:
 	case PK_INFO_ENUM_UPDATING:
 		ret = TRUE;
 		break;

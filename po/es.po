@@ -11,7 +11,7 @@
 # Daniel Cabrera <logan@fedoraproject.org>, 2011, 2012
 # 0f759dd1ea6c4c76cedc299039ca4f23_7584d04 <454cc45058db9632179dc8079c0c1af3_5311>, 2012-2013
 # Fernando Gonzalez Blanco <fgonz@fedoraproject.org>, 2009
-# Francisco Serrador, 2022
+# Francisco Serrador, 2022-2023
 # Javier Alejandro Castro <javier.alejandro.castro@gmail.com>, 2008
 # Jorge González <aloriel@gmail.com>, 2011
 # Richard Hughes <richard@hughsie.com>, 2011
@@ -19,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PackageKit\n"
 "Report-Msgid-Bugs-To: \n"
-"Language-Team: Spanish (http://www.transifex.com/freedesktop/packagekit/language/es/)\n"
+"Language-Team: Spanish (http://app.transifex.com/freedesktop/packagekit/language/es/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -151,7 +151,7 @@ msgstr "Permitir la instalación de paquetes no confiables."
 #. TRANSLATORS: The user didn't
 #. * specify what action to use
 msgid "An action, e.g. 'update-packages' is required"
-msgstr "Se necesita una acción, p. ej., «update-packages»"
+msgstr "Se necesita una acción, p.ej., «update-packages»"
 
 #. TRANSLATORS: a package requires the application to be restarted
 msgid "Application restart required by:"
@@ -289,13 +289,13 @@ msgstr "Purgando"
 #. TRANSLATORS: transaction state, removing old packages, and cleaning config
 #. files
 msgid "Cleaning up packages"
-msgstr "Limpiando paquetes"
+msgstr "Vaciando paquetes"
 
 #. SECURITY:
 #. - Normal users are able to clear the updates message that is
 #. shown after an updates are applied at boot time.
 msgid "Clear offline update message"
-msgstr "Limpiar el mensaje de actualización en modo desconectado"
+msgstr "Vaciar el mensaje de actualización en modo desconectado"
 
 #. TRANSLATORS: Generic failure of what they asked to do
 msgid "Command failed"
@@ -312,6 +312,9 @@ msgstr "No se encontró la orden. Las órdenes válidas son:"
 #. database
 msgid "Committing changes"
 msgstr "Realizando modificaciones"
+
+msgid "Config file was not found."
+msgstr "El archivo de configuración no fue encontrado."
 
 #. TRANSLATORS: transaction state, we are copying package files before or
 #. after the transaction
@@ -373,7 +376,7 @@ msgstr "¿Quiere permitir la instalación de software no firmado?"
 
 #. TRANSLATORS: don't unset environment variables, used for debugging
 msgid "Don't clear environment on startup"
-msgstr "No limpiar el entorno al inicio"
+msgstr "No vaciar el entorno al arrancar"
 
 #. TRANSLATORS: The action of the package, in past tense
 msgid "Downloaded"
@@ -401,7 +404,7 @@ msgstr "Descargando grupos"
 
 #. TRANSLATORS: transaction state, downloading metadata
 msgid "Downloading list of packages"
-msgstr "Descargando listados de paquetes"
+msgstr "Descargando listado de paquetes"
 
 #. TRANSLATORS: transaction state, downloading metadata
 msgid "Downloading lists of changes"
@@ -475,21 +478,37 @@ msgstr "No se pudieron instalar los paquetes"
 msgid "Failed to launch:"
 msgstr "Error al iniciar:"
 
+#. TRANSLATORS: The placeholder is an error message
+#, c-format
+msgid "Failed to load config file: %s"
+msgstr "Error al cargar el archivo de configuración: %s"
+
 #. TRANSLATORS: cannot load the backend the user specified
 msgid "Failed to load the backend"
-msgstr "Falló la carga del motor"
+msgstr "Ha fallado la carga del motor"
+
+#. TRANSLATORS: cannot load the backend the user specified
+#, c-format
+msgid "Failed to load the backend: %s"
+msgstr "Error al cargar el backend: %s"
 
 #. TRANSLATORS: probably not yet installed
 msgid "Failed to load the config file"
-msgstr "Falló la carga del archivo de configuración"
+msgstr "Ha fallado la carga del archivo de configuración"
 
 #. TRANSLATORS: the user didn't read the man page
 msgid "Failed to parse arguments"
-msgstr "Falló el análisis de los argumentos"
+msgstr "Ha fallado el intérprete de los argumentos"
 
 #. TRANSLATORS: we failed to contact the daemon
 msgid "Failed to parse command line"
-msgstr "Falló al analizar la línea de órdenes"
+msgstr "Error al analizar la línea de instrucción"
+
+#. TRANSLATORS: The placeholder is an error message.
+#. * `auto` is a potential value of the DefaultBackend= configuration key.
+#, c-format
+msgid "Failed to resolve auto: %s"
+msgstr "Error al auto-resolver: %s"
 
 #. TRANSLATORS: we failed to find the package, this shouldn't happen
 msgid "Failed to search for file"
@@ -497,7 +516,7 @@ msgstr "No se pudo buscar el archivo"
 
 #. TRANSLATORS: cannot unload the backend the user specified
 msgid "Failed to unload the backend"
-msgstr "Falló la descarga del motor"
+msgstr "Ha fallado la descarga del motor"
 
 msgid "False"
 msgstr "Falso"
@@ -585,7 +604,7 @@ msgstr "Obteniendo versiones nuevas"
 
 #. TRANSLATORS: this is group identifier
 msgid "ID"
-msgstr "Id."
+msgstr "Id"
 
 #. TRANSLATORS: this is preferred icon for the group
 msgid "Icon"
@@ -718,7 +737,7 @@ msgstr "Cargando caché"
 
 #. TRANSLATORS: loading package cache so we can search
 msgid "Loading list of packages."
-msgstr "Cargando listas de paquetes."
+msgstr "Cargando listado de paquetes."
 
 #. TRANSLATORS: the user needs to change media inserted into the computer
 msgid "Media change required"
@@ -906,15 +925,15 @@ msgstr "Reiniciando después de instalar las actualizaciones…"
 #. - Normal users do not require admin authentication to refresh the
 #. cache, as this doesn't actually install or remove software.
 msgid "Refresh system repositories"
-msgstr "Actualizar repositorios del sistema"
+msgstr "Recargar repositorios del sistema"
 
 #. TRANSLATORS: command description
 msgid "Refresh the cache"
-msgstr "Actualizar la caché"
+msgstr "Recargar la caché"
 
 #. TRANSLATORS: command description
 msgid "Refresh the cache (forced)"
-msgstr "Actualizar la caché (forzadamente)"
+msgstr "Recargar la caché (forzadamente)"
 
 #. TRANSLATORS: The role of the transaction, in present tense
 msgid "Refreshing cache"
@@ -942,7 +961,7 @@ msgstr "Reinstalando"
 #. 'auth_admin'.
 #. TRANSLATORS: command description
 msgid "Remove package"
-msgstr "Eliminar paquete"
+msgstr "Quitar paquete"
 
 #. TRANSLATORS: The action of the package, in past tense
 msgid "Removed"
@@ -1192,7 +1211,7 @@ msgstr "Los paquetes siguientes no son confiables:"
 
 #. TRANSLATORS: When processing, we might have to downgrade other dependencies
 msgid "The following packages have to be downgraded:"
-msgstr "Los paquetes siguientes deben desactualizarse:"
+msgstr "Los paquetes siguientes deben ser degradados:"
 
 #. TRANSLATORS: When processing, we might have to install other dependencies
 msgid "The following packages have to be installed:"
@@ -1213,10 +1232,6 @@ msgstr "Los paquetes siguientes deben desinstalarse:"
 #. TRANSLATORS: When processing, we might have to update other dependencies
 msgid "The following packages have to be updated:"
 msgstr "Los paquetes siguientes deben actualizarse:"
-
-#. TRANSLATORS: command line argument, just output without fancy formatting
-msgid "The maximum metadata cache age. Use -1 for 'never'."
-msgstr "El tiempo máximo de edad para la caché de metadatos. Usar -1 para «nunca»."
 
 #. TRANSLATORS: tell the user what package provides the command
 msgid "The package providing this file is:"
@@ -1307,7 +1322,7 @@ msgstr "Hora origen"
 #. TRANSLATORS: the role is the point of the transaction,
 #. * e.g. update-packages
 msgid "Transaction"
-msgstr "Operación"
+msgstr "Transacción"
 
 #. SECURITY:
 #. - Normal users are able to ask updates to be installed at

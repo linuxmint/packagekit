@@ -288,17 +288,6 @@ void		 pk_client_remove_packages_async	(PkClient		*client,
 							 GAsyncReadyCallback	 callback_ready,
 							 gpointer		 user_data);
 
-void         pk_client_purge_packages_async    (PkClient       *client,
-                             PkBitfield      transaction_flags,
-                             gchar          **package_ids,
-                             gboolean        allow_deps,
-                             gboolean        autoremove,
-                             GCancellable       *cancellable,
-                             PkProgressCallback  progress_callback,
-                             gpointer        progress_user_data,
-                             GAsyncReadyCallback     callback_ready,
-                             gpointer        user_data);
-
 void		 pk_client_refresh_cache_async		(PkClient		*client,
 							 gboolean		 force,
 							 GCancellable		*cancellable,
@@ -442,6 +431,9 @@ gboolean	 pk_client_get_idle			(PkClient		*client);
 void		 pk_client_set_cache_age		(PkClient		*client,
 							 guint			 cache_age);
 guint		 pk_client_get_cache_age		(PkClient		*client);
+void		 pk_client_set_details_with_deps_size	(PkClient		*client,
+							 gboolean		 details_with_deps_size);
+gboolean	 pk_client_get_details_with_deps_size	(PkClient		*client);
 
 G_END_DECLS
 

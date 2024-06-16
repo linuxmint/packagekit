@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the PackageKit package.
 #
 # Translators:
-# assar <asier.sarasua@gmail.com>, 2015-2016,2019
+# assar <asier.sarasua@gmail.com>, 2015-2016,2019,2023
 # assar <asier.sarasua@gmail.com>, 2013-2015
 # assar <asier.sarasua@gmail.com>, 2012
 # Richard Hughes <richard@hughsie.com>, 2011
@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PackageKit\n"
 "Report-Msgid-Bugs-To: \n"
-"Language-Team: Basque (http://www.transifex.com/freedesktop/packagekit/language/eu/)\n"
+"Language-Team: Basque (http://app.transifex.com/freedesktop/packagekit/language/eu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -305,6 +305,9 @@ msgstr "Komandoa ez da aurkitu, baliozko komandoak honakoak dira:"
 msgid "Committing changes"
 msgstr "Aldaketak aplikatzen"
 
+msgid "Config file was not found."
+msgstr "Ez da konfigurazio-fitxategia aurkitu."
+
 #. TRANSLATORS: transaction state, we are copying package files before or
 #. after the transaction
 msgid "Copying files"
@@ -467,9 +470,19 @@ msgstr "Paketeen instalazioak huts egin du"
 msgid "Failed to launch:"
 msgstr "Abioak huts egin du:"
 
+#. TRANSLATORS: The placeholder is an error message
+#, c-format
+msgid "Failed to load config file: %s"
+msgstr "Huts egin du konfigurazio-fitxategiaren kargak: %s"
+
 #. TRANSLATORS: cannot load the backend the user specified
 msgid "Failed to load the backend"
 msgstr "Atzealdekoa kargatzeak huts egin du"
+
+#. TRANSLATORS: cannot load the backend the user specified
+#, c-format
+msgid "Failed to load the backend: %s"
+msgstr "Huts egin du motorra kargatzeak: %s"
 
 #. TRANSLATORS: probably not yet installed
 msgid "Failed to load the config file"
@@ -482,6 +495,12 @@ msgstr "Argumentuen analisiak huts egin du"
 #. TRANSLATORS: we failed to contact the daemon
 msgid "Failed to parse command line"
 msgstr "Ezin izan da komando-lerroa analizatu"
+
+#. TRANSLATORS: The placeholder is an error message.
+#. * `auto` is a potential value of the DefaultBackend= configuration key.
+#, c-format
+msgid "Failed to resolve auto: %s"
+msgstr "Huts egin du automatikoak ebazteak: %s"
 
 #. TRANSLATORS: we failed to find the package, this shouldn't happen
 msgid "Failed to search for file"
@@ -1206,10 +1225,6 @@ msgstr "Hurrengo paketeak kendu behar dira:"
 msgid "The following packages have to be updated:"
 msgstr "Hurrengo paketeak eguneratu behar dira:"
 
-#. TRANSLATORS: command line argument, just output without fancy formatting
-msgid "The maximum metadata cache age. Use -1 for 'never'."
-msgstr "Metadata-cachearen adin maximoa. Erabili -1 'inoiz ez' adierazteko."
-
 #. TRANSLATORS: tell the user what package provides the command
 msgid "The package providing this file is:"
 msgstr "Fitxategi honetaz hornitzen duen paketea hau da:"
@@ -1217,6 +1232,11 @@ msgstr "Fitxategi honetaz hornitzen duen paketea hau da:"
 #. TRANSLATORS: The network settings could not be sent
 msgid "The proxy could not be set"
 msgstr "Ezin izan da proxy-a ezarri"
+
+#. TRANSLATORS: There was an error finding a package
+#. * for installation, it may already be installed.
+msgid "The selected packages may already be installed."
+msgstr "Hautatutako paketeak agian instalatuta daude."
 
 #. TRANSLATORS: tell the user we've not done anything
 msgid "The signature was not accepted."
@@ -1263,6 +1283,10 @@ msgstr "Ez dago bertsio-berritzerik uneotan."
 #, c-format
 msgid "This tool could not find all the packages: %s"
 msgstr "Tresna honek ez du aurkitu pakete guztiak: %s"
+
+#. TRANSLATORS: We were unable to find a package for installation.
+msgid "This tool could not find any available package."
+msgstr "Tresna honek ez du aurkitu pakete erabilgarririk."
 
 #. TRANSLATORS: There was an error finding a package
 #. * for installation. The detailed error follows.

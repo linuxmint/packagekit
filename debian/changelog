@@ -1,9 +1,58 @@
-packagekit (1.2.6+mint1) faye; urgency=medium
+packagekit (1.2.8-2build3) noble; urgency=medium
 
-  [ Michael Webster ]
-  * Add 'purge' capability (apt backend only).
+  * No-change rebuild for CVE-2024-3094
 
- -- Clement Lefebvre <root@linuxmint.com>  Wed, 23 Aug 2023 12:16:22 +0100
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Sun, 31 Mar 2024 08:13:09 +0000
+
+packagekit (1.2.8-2build2) noble; urgency=medium
+
+  * No-change rebuild against libglib2.0-0t64
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Mon, 11 Mar 2024 23:26:24 +0000
+
+packagekit (1.2.8-2build1) noble; urgency=medium
+
+  * No-change rebuild against libapt-pkg6.0t64
+
+ -- Steve Langasek <steve.langasek@ubuntu.com>  Wed, 28 Feb 2024 19:21:56 +0000
+
+packagekit (1.2.8-2) unstable; urgency=medium
+
+  * Add strlen-cmp-memfix.patch:
+    - Check string length correctly to prevent memory
+      over-consumption.
+  * Add identify-ubuntu.patch:
+    - Do not incorrectly identify Ubuntu sources as coming
+      from Debian.
+  * Switch build dependency from pkg-config -> pkgconf,
+    add gobject-introspection-bin.
+
+ -- Matthias Klumpp <mak@debian.org>  Tue, 20 Feb 2024 22:20:42 +0100
+
+packagekit (1.2.8-1) unstable; urgency=medium
+
+  [ Matthias Klumpp ]
+  * New upstream version: 1.2.8
+    - Removes bashisms (Closes: #772289)
+    - Fixes crash when finishing a uncommitted transaction (Closes: #1054026)
+    - Deduplicates offline-update entries (Closes: #910365)
+  * Slightly tweak description text
+
+  [ Helmut Grohne ]
+  * Fix FTBFS when systemd.pc changes systemdsystemunitdir (Closes: #1052982)
+
+ -- Matthias Klumpp <mak@debian.org>  Wed, 08 Nov 2023 22:28:00 +0100
+
+packagekit (1.2.7-1) unstable; urgency=medium
+
+  * New upstream version 1.2.7
+  * Drop all patches: Applied upstream
+  * Enable all tests except for the daemon tests
+    - The daemon tests need special configuration and
+      root access, so we still can not run them.
+  * Update symbols file
+
+ -- Matthias Klumpp <mak@debian.org>  Sun, 27 Aug 2023 15:46:54 +0200
 
 packagekit (1.2.6-5) unstable; urgency=medium
 

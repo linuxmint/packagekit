@@ -1,3 +1,78 @@
+Version 1.2.8
+~~~~~~~~~~~~~
+Released: 2023-11-08
+
+Libraries:
+ * offline-updates: Make package update list deduplication more efficient (Matthias Klumpp)
+ * offline-updates: Add only one entry per package to 'offline-update-competed' file (sid)
+ * PkClient: Replace the GSimpleAsyncResult with the GTask API (Corentin Noël)
+ * pk-client: Fix use-before-set of PkProgress on cancellation (Philip Withnall)
+ * pk-client: Move cancellable disconnect to dispose (Philip Withnall)
+ * pk-client: Rework refcounting for PkClientState (Philip Withnall)
+
+Backends:
+ * apt/dnf: Adjust for upcoming AppStream 1.0 API (Matthias Klumpp)
+ * dnf: Avoid downloading caches multiple times in one call (Alessandro Astone)
+ * dnf: Better weigh the progress of download-only transactions (Alessandro Astone)
+ * dnf: Remove unused import from backends/dnf/notify_packagekit.py (Gordon Messmer)
+ * Revive PiSi backend (Erkan IŞIK)
+ * freebsd: Add new FreeBSD backend (Gleb Popov)
+
+Bugfixes:
+ * tests: Exclusively use g_assert_true (Matthias Klumpp)
+ * tests: Avoid bashisms in sh by using bash (Matthias Klumpp)
+ * transaction: We only need to emit finished when we were committed (Matthias Klumpp)
+
+Miscellaneous:
+ * tests: Restructure, enable daemon tests on CI (Matthias Klumpp)
+ * ci: Modernize & launch dbus-daemon (Matthias Klumpp)
+ * transaction: replace defunct www.packagekit.org URL with freedesktop URL (Corentin Noël)
+ * docs: Update outdated offline-updates.txt (sid)
+
+Version 1.2.7
+~~~~~~~~~~~~~
+Released: 2023-08-26
+
+New Features:
+ * pkclient: Add an option to count download size with dependencies (Milan Crha)
+ * pk-transaction: Add support for getting the RemainingTime property (Philip Withnall)
+
+Backends:
+ * dnf: Notify PackageKit when dnf installs or removes packages (Gordon Messmer)
+ * dnf: Run pk_backend_refresh_repo in a new process to avoid keeping libdnf memory leaks (Gordon Messmer)
+ * dnf: Calculate download size with dependencies, if requested (Milan Crha)
+ * zypp: Fix ambiguous reference to 'filesystem' class (Jonathan Kang)
+ * apt: Display more useful pretty names for repositories (Matthias Klumpp)
+ * apt: Set update urgency as urgency as well as status again (Matthias Klumpp)
+ * apt: Don't crash while resolving mimetypes, modernize mime search code (Matthias Klumpp)
+ * apt: Fix 'search-file' regexp as per BRE pattern (which is the default) (sid)
+ * alpm: add and support deepin group (Wang Zichong)
+
+Bugfixes:
+ * progress: Free the sender value on finalize (Corentin Noël)
+ * Add G_PARAM_STATIC_STRINGS to all properties (Corentin Noël)
+ * pkcon: Widen progressbar text area (Frank Dana)
+ * Use more portable shebang in Python test scripts (Gleb Popov)
+ * Make use of SYSCONFDIR definition when setting a config file watch (Gleb Popov)
+ * Shutdown daemon on idle by default again (yump)
+ * Fix use of potentially uninitialized timer ID (Gordon Messmer)
+ * pk-transaction: Return an error if property name is not known (Philip Withnall)
+ * pk-client: Signal a transaction as finished if it disappears off the bus (Philip Withnall)
+ * pk-transaction: Check that Finished signal is emitted at most once (Philip Withnall)
+ * pk-transaction: Check that Finished signal is emitted at least once (Philip Withnall)
+
+Miscellaneous:
+ * Add FreeBSD CI using cirrus (Alexey Yushkin)
+ * packagekitd: Use export_dynamic explicitly (Dominique Leuenberger)
+ * Use the term DDE instead of deepin (Gary Wang)
+ * packagekit-glib2: Use the correct enum for DDE (Neal Gompa)
+ * data/meson.build: Install dbus policy in /usr/share, not /etc (Gioele Barabucci)
+ * Globally pass -DPK_COMPILATION to the C++ compiler (Gleb Popov)
+ * metadata: Remove reference to defunct screenshots URL (Marcus Müller)
+ * metadata: replace defunct www.packagekit.org URL with freedesktop URL (Marcus Müller)
+ * docs: replace defunct www.packagekit.org URL with freedesktop URL (Marcus Müller)
+ * HACKING: Refresh to match current practices (Neal Gompa)
+
 Version 1.2.6
 ~~~~~~~~~~~~~
 Released: 2022-12-01
@@ -721,7 +796,7 @@ Backends:
  - portage: use PackagekitProgress as an iterable (Gilles Dartiguelongue)
  - portage: use python idioms (Gilles Dartiguelongue)
  - python: make PackagekitProgress an Iterable (Gilles Dartiguelongue)
- - python: set steps on PackagekitProgress instanciation (Gilles Dartiguelongue)
+ - python: set steps on PackagekitProgress instantiation (Gilles Dartiguelongue)
  - zypp: Raise priority of ZYPP stack updates if a security patch is shadowed (bsc#951592) (Michael Andres)
 
 New Features:
@@ -2271,7 +2346,7 @@ Backends:
  - apt: Raise exceptions in the backend code instead of calling PackageKitBaseBackend.error directly (Sebastian Heinlein)
  - apt: remove encoding mangling - should be handled by packagekit.backend already (Sebastian Heinlein)
  - apt: remove oboslete files (Sebastian Heinlein)
- - apt: Respect the ROOT environement variable (Sebastian Heinlein)
+ - apt: Respect the ROOT environment variable (Sebastian Heinlein)
  - apt: Start with updating the backend on several places (Sebastian Heinlein)
  - apt: Too many API and style fixes to count (Sebastian Heinlein)
  - apt: Use the apt.progress.base.InstallProgress abilities to handle dpkg progress (Sebastian Heinlein)
@@ -4113,7 +4188,7 @@ Backends
  - portage: get-depends filtering output (Mounir Lamouri)
  - portage: Improve get-updates with security updates (Mounir Lamouri)
  - portage: Update the category/group map (Mounir Lamouri)
- - portage: Explicitely let portage backend accept sigkill (Mounir Lamouri)
+ - portage: Explicitly let portage backend accept sigkill (Mounir Lamouri)
  - portage: Cleaning, fixing not-found-error, misc (Mounir Lamouri)
  - portage: Clean remove-packages after portage fixes (Mounir Lamouri)
  - portage: Show a message if try to use remove-packages with autoremove=True (Mounir Lamouri)
@@ -6587,7 +6662,7 @@ Released: 2007-11-10
  - Replace the g_strjoinv and use pk_strbuild_va to append a va_list to fix
    a crash on i86_64 (Richard Hughes)
  - Immediate exit has to wait a few cycles for registration (Richard Hughes)
- - Check for existance of apt_pkg python module with apt backend (Tom Parker)
+ - Check for existence of apt_pkg python module with apt backend (Tom Parker)
  - yum: Emit no-cache in resolve if the cache is invalid (Tim Lauridsen)
  - Correct typos and thinkos, and add a few more application notes to the
    developer documentation (Richard Hughes)

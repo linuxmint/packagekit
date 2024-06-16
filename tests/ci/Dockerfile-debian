@@ -1,7 +1,7 @@
-FROM debian:bullseye
+FROM debian:bookworm
 
 # allow fetching source packages
-RUN echo "deb-src http://deb.debian.org/debian/ bullseye main" >> /etc/apt/sources.list
+RUN echo "deb-src http://deb.debian.org/debian/ bookworm main" >> /etc/apt/sources.list
 
 # prepare
 RUN apt-get update -qq
@@ -11,7 +11,7 @@ RUN apt-get install -yq build-essential
 
 # install PackageKit dependencies
 RUN apt-get build-dep -yq packagekit
-RUN apt-get install -yq meson
+RUN apt-get install -yq meson appstream
 
 # finish
 RUN mkdir /build
