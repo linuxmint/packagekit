@@ -1988,7 +1988,7 @@ pk_client_set_hints_cb (GObject *source_object,
                    PK_CLIENT_DBUS_METHOD_TIMEOUT,
                    state->cancellable,
                    pk_client_method_cb,
-                   state);
+                   g_object_ref (state));
         g_object_set (state->results,
                   "inputs", g_strv_length (state->package_ids),
                   NULL);
