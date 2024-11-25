@@ -1,3 +1,10 @@
+packagekit (1.2.8+mint2) xia; urgency=medium
+
+  [ Michael Webster ]
+  * pk-client.c: don't allow the PkTaskState to be destroyed before the task completes.
+
+ -- Clement Lefebvre <root@linuxmint.com>  Mon, 25 Nov 2024 09:48:57 +0000
+
 packagekit (1.2.8+mint1) wilma; urgency=medium
 
   [ Michael Webster ]
