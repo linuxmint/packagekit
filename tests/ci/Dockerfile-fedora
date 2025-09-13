@@ -1,17 +1,26 @@
-FROM fedora:38
+FROM fedora:latest
 
 RUN dnf -y update
 RUN dnf -y install \
 	dnf-plugins-core \
 	libdnf-devel \
+	libdnf5-devel \
 	redhat-rpm-config \
 	meson \
 	gcc \
+	gcc-c++ \
 	ninja-build \
 	dbus-daemon \
+	sdbus-cpp-devel \
 	appstream \
 	appstream-devel
 RUN dnf -y builddep PackageKit
+
+# install dependencies for 'alpm' backend
+RUN dnf -y install libalpm-devel
+
+# install dependencies for 'zypp' backend
+RUN dnf -y install libzypp-devel
 
 RUN mkdir /build
 WORKDIR /build

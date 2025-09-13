@@ -1,13 +1,15 @@
 project('PackageKit', 'c',
-  version : '1.2.8',
+  version : '1.3.1',
   license : 'LGPL-2.1+',
-  meson_version : '>=0.50',
-  default_options : ['warning_level=2', 'c_std=c99'],
+  meson_version : '>=1.0',
+  default_options : ['warning_level=2', 'c_std=gnu11'],
 )
 
 gnome = import('gnome')
 i18n = import('i18n')
 pkg = import('pkgconfig')
+
+source_root = meson.project_source_root()
 
 glib_dep = dependency('glib-2.0', version: '>=2.62')
 gobject_dep = dependency('gobject-2.0')
@@ -29,24 +31,22 @@ if get_option('systemd')
     systemd = dependency('systemd')
   endif
   if systemd_system_unit_dir == ''
-    systemd_system_unit_dir = systemd.get_pkgconfig_variable('systemdsystemunitdir')
+    systemd_system_unit_dir = systemd.get_variable(pkgconfig: 'systemdsystemunitdir')
   endif
   if systemd_user_unit_dir == ''
-    systemd_user_unit_dir = systemd.get_pkgconfig_variable('systemduserunitdir')
+    systemd_user_unit_dir = systemd.get_variable(pkgconfig: 'systemduserunitdir')
   endif
 
   add_project_arguments ('-DHAVE_SYSTEMD_SD_DAEMON_H=1', language: 'c')
   add_project_arguments ('-DHAVE_SYSTEMD_SD_LOGIN_H=1', language: 'c')
-else
-  if get_option('offline_update')
-    error('Offline updates requires Systemd, use -Dsystemd=true to enable it or -Doffline_update=false to disable offline updates')
-  endif
+  add_project_arguments ('-DHAVE_SYSTEMD_SD_JOURNAL_H=1', language: 'c')
 endif
 
 elogind = []
 if get_option('elogind')
   elogind = dependency('elogind', version: '>=229.4')
   add_project_arguments ('-DHAVE_SYSTEMD_SD_LOGIN_H=1', language: 'c')
+  add_project_arguments ('-DHAVE_SYSTEMD_SD_JOURNAL_H=1', language: 'c')
 endif
 
 if get_option('local_checkout')
@@ -101,47 +101,89 @@ config_dep = declare_dependency(
 
 pk_db_dir = join_paths(get_option('localstatedir'), 'lib', 'PackageKit')
 local_state_dir = get_option('localstatedir')
-test_data_dir = join_paths(meson.source_root(), 'tests', 'data')
+test_data_dir = join_paths(source_root, 'tests', 'data')
 package_data_dir = get_option('datadir')
 package_locale_dir = join_paths(get_option('prefix'), get_option('datadir'), 'locale')
 pk_plugin_dir = join_paths(get_option('prefix'), get_option('libdir'), 'packagekit-backend')
 
-# work both in C and C++
+# default compiler flags for C and C++
 add_project_arguments(
-  '-Wall',
-  '-Wcast-align', '-Wno-uninitialized',
-  '-Wmissing-declarations',
-  '-Wredundant-decls',
-  '-Wpointer-arith',
-  '-Wcast-align',
-  '-Wwrite-strings',
-  '-Winit-self',
-  '-Wreturn-type',
-  '-Wformat-nonliteral',
-  '-Wformat-security',
-  '-Wmissing-include-dirs',
-  '-Wmissing-format-attribute',
-  '-Wclobbered',
-  '-Wempty-body',
-  '-Wignored-qualifiers',
-  '-Wsign-compare',
-  '-Wtype-limits',
-  '-Wuninitialized',
-  '-Wno-unused-parameter',
+    '-Wcast-align',
+    '-Wno-uninitialized',
+    '-Werror=missing-declarations',
+    '-Wredundant-decls',
+    '-Wpointer-arith',
+    '-Wcast-align',
+    '-Wwrite-strings',
+    '-Winit-self',
+    '-Wreturn-type',
+    '-Wformat-nonliteral',
+    '-Wformat-security',
+    '-Wmissing-include-dirs',
+    '-Wmissing-format-attribute',
+    '-Wclobbered',
+    '-Wempty-body',
+    '-Wignored-qualifiers',
+    '-Wsign-compare',
+    '-Wtype-limits',
+    '-Wuninitialized',
+    '-Wno-unused-parameter',
+    '-Wno-error=unused-parameter',
+    '-Werror=misleading-indentation',
+    '-Werror=return-type',
+    '-Werror=format-security',
+    '-Werror=missing-declarations',
+    '-Werror=pointer-arith',
+    '-Werror=empty-body',
+
   language: ['c', 'cpp']
 )
 
-# work only in C
+# default compiler warning/error flags for C only
 add_project_arguments(
-  '-Waggregate-return',
-  '-Wdeclaration-after-statement',
-  '-Wshadow',
-  '-Wno-strict-aliasing',
-  '-Winline',
-  '-Wmissing-parameter-type',
-  '-Woverride-init',
+  cc.get_supported_arguments([
+    '-Werror=shadow',
+    '-Werror=strict-prototypes',
+    '-Werror=missing-prototypes',
+    '-Werror=implicit-function-declaration',
+    '-Werror=int-conversion',
+    '-Werror=incompatible-pointer-types',
+    '-Werror=missing-include-dirs',
+    '-Werror=declaration-after-statement',
+    '-Waggregate-return',
+    '-Wno-strict-aliasing',
+    '-Winline',
+    '-Wmissing-parameter-type',
+    '-Woverride-init',
+  ]),
   language: 'c'
 )
+
+# default warning flags for C++ only
+add_project_arguments(
+  '-Werror=init-self',
+  language: 'cpp'
+)
+
+# maintainer mode is even stricter
+if get_option('maintainer')
+    add_project_arguments(
+        '-Werror',
+        '-Wall',
+        '-Wextra',
+        '-Wcast-align',
+        '-Wno-uninitialized',
+        '-Wempty-body',
+        '-Winit-self',
+        '-Wnull-dereference',
+        '-Wfloat-equal',
+        '-Winline',
+        '-Wno-error=comment',
+        '-Werror=format-security',
+
+        language: ['c', 'cpp']
+    )
+endif
 
 subdir('po')
 subdir('policy')

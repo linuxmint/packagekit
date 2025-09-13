@@ -2,7 +2,8 @@
  *
  * Copyright (C) 2007-2008 Richard Hughes <richard@hughsie.com>
  * Copyright (C) 2009-2016 Daniel Nicoletti <dantti12@gmail.com>
- *               2016 Harald Sitter <sitter@kde.org>
+ * Copyright (C) 2016 Harald Sitter <sitter@kde.org>
+ * Copyright (C) 2018-2025 Matthias Klumpp <matthias@tenstral.net>
  *
  * Licensed under the GNU General Public License Version 2
  *
@@ -388,10 +389,10 @@ static void backend_get_updates_thread(PkBackendJob *job, GVariant *params, gpoi
     updates = apt->getUpdates(blocked, downgrades, installs, removals, obsoleted);
 
     apt->emitUpdates(updates, filters);
-    apt->emitPackages(installs, filters, PK_INFO_ENUM_INSTALLING);
-    apt->emitPackages(removals, filters, PK_INFO_ENUM_REMOVING);
-    apt->emitPackages(obsoleted, filters, PK_INFO_ENUM_OBSOLETING);
-    apt->emitPackages(downgrades, filters, PK_INFO_ENUM_DOWNGRADING);
+    apt->emitPackages(installs, filters, PK_INFO_ENUM_INSTALL);
+    apt->emitPackages(removals, filters, PK_INFO_ENUM_REMOVE);
+    apt->emitPackages(obsoleted, filters, PK_INFO_ENUM_OBSOLETE);
+    apt->emitPackages(downgrades, filters, PK_INFO_ENUM_DOWNGRADE);
     apt->emitPackages(blocked, filters, PK_INFO_ENUM_BLOCKED);
 }
 
@@ -528,7 +529,7 @@ static void pk_backend_download_packages_thread(PkBackendJob *job, GVariant *par
                 }
 
                 gchar **files = (gchar **) g_malloc(2 * sizeof(gchar *));
-                files[0] = g_strdup_printf("%s/%s", directory.c_str(), flNotDir(storeFileName).c_str());
+                files[0] = g_strdup_printf("%s/%s", directory.c_str(), std::string{flNotDir(storeFileName)}.c_str());
                 files[1] = NULL;
                 pk_backend_job_files(job, pi, files);
                 g_strfreev(files);
@@ -750,12 +751,6 @@ static void backend_manage_packages_thread(PkBackendJob *job, GVariant *params, 
                       &package_ids,
                       &allow_deps,
                       &autoremove);
-    } else if (role == PK_ROLE_ENUM_PURGE_PACKAGES) {
-        g_variant_get(params, "(t^a&sbb)",
-                      &transaction_flags,
-                      &package_ids,
-                      &allow_deps,
-                      &autoremove);
     } else if (role == PK_ROLE_ENUM_INSTALL_PACKAGES) {
         g_variant_get(params, "(t^a&s)",
                       &transaction_flags,
@@ -782,14 +777,12 @@ static void backend_manage_packages_thread(PkBackendJob *job, GVariant *params, 
     }
 
     pk_backend_job_set_status(job, PK_STATUS_ENUM_QUERY);
-    PkgList installPkgs, removePkgs, purgePkgs, updatePkgs;
+    PkgList installPkgs, removePkgs, updatePkgs;
 
     if (!fixBroken) {
         // Resolve the given packages
         if (role == PK_ROLE_ENUM_REMOVE_PACKAGES) {
             removePkgs = apt->resolvePackageIds(package_ids);
-        } else if (role == PK_ROLE_ENUM_PURGE_PACKAGES) {
-            purgePkgs = apt->resolvePackageIds(package_ids);
         } else if (role == PK_ROLE_ENUM_INSTALL_PACKAGES) {
             installPkgs = apt->resolvePackageIds(package_ids);
         } else if (role == PK_ROLE_ENUM_UPDATE_PACKAGES) {
@@ -803,7 +796,7 @@ static void backend_manage_packages_thread(PkBackendJob *job, GVariant *params, 
             return;
         }
 
-        if (removePkgs.size() == 0 && purgePkgs.size() == 0 && installPkgs.size() == 0 && updatePkgs.size() == 0) {
+        if (removePkgs.size() == 0 && installPkgs.size() == 0 && updatePkgs.size() == 0) {
             pk_backend_job_error_code(job,
                                       PK_ERROR_ENUM_PACKAGE_NOT_FOUND,
                                       "Could not find package(s)");
@@ -814,7 +807,6 @@ static void backend_manage_packages_thread(PkBackendJob *job, GVariant *params, 
     // Install/Update/Remove packages, or just simulate
     bool ret = apt->runTransaction(installPkgs,
                                    removePkgs,
-                                   purgePkgs,
                                    updatePkgs,
                                    fixBroken,
                                    transaction_flags,
@@ -856,16 +848,6 @@ void pk_backend_remove_packages(PkBackend *backend,
                                 gchar **package_ids,
                                 gboolean allow_deps,
                                 gboolean autoremove)
-{
-    pk_backend_job_thread_create(job, backend_manage_packages_thread, NULL, NULL);
-}
-
-void pk_backend_purge_packages(PkBackend *backend,
-                               PkBackendJob *job,
-                               PkBitfield transaction_flags,
-                               gchar **package_ids,
-                               gboolean allow_deps,
-                               gboolean autoremove)
 {
     pk_backend_job_thread_create(job, backend_manage_packages_thread, NULL, NULL);
 }
@@ -918,38 +900,35 @@ static void backend_repo_manager_thread(PkBackendJob *job, GVariant *params, gpo
         return;
     }
 
-    for (SourcesList::SourceRecord *souceRecord : sourcesList.SourceRecords) {
+    for (SourcesList::SourceRecord *sourceRecord : sourcesList.SourceRecords) {
 
-        if (souceRecord->Type & SourcesList::Comment) {
+        if (sourceRecord->Type & SourcesList::Comment) {
             continue;
         }
 
-        string sections = souceRecord->joinedSections();
+        string sections = sourceRecord->joinedSections();
 
-        string repoId = souceRecord->repoId();
+        string repoId = sourceRecord->repoId();
 
         if (role == PK_ROLE_ENUM_GET_REPO_LIST) {
             if (pk_bitfield_contain(filters, PK_FILTER_ENUM_NOT_DEVELOPMENT) &&
-                    (souceRecord->Type & SourcesList::DebSrc ||
-                     souceRecord->Type & SourcesList::RpmSrc ||
-                     souceRecord->Type & SourcesList::RpmSrcDir ||
-                     souceRecord->Type & SourcesList::RepomdSrc)) {
+                    (sourceRecord->Type & SourcesList::DebSrc)) {
                 continue;
             }
 
             pk_backend_job_repo_detail(job,
                                        repoId.c_str(),
-                                       souceRecord->niceName().c_str(),
-                                       !(souceRecord->Type & SourcesList::Disabled));
+                                       sourceRecord->niceName().c_str(),
+                                       !(sourceRecord->Type & SourcesList::Disabled));
         } else if (repoId.compare(repo_id) == 0) {
             // Found the repo to enable/disable
             found = true;
 
             if (role == PK_ROLE_ENUM_REPO_ENABLE) {
                 if (enabled) {
-                    souceRecord->Type = souceRecord->Type & ~SourcesList::Disabled;
+                    sourceRecord->Type = sourceRecord->Type & ~SourcesList::Disabled;
                 } else {
-                    souceRecord->Type |= SourcesList::Disabled;
+                    sourceRecord->Type |= SourcesList::Disabled;
                 }
 
                 // Commit changes
@@ -965,13 +944,12 @@ static void backend_repo_manager_thread(PkBackendJob *job, GVariant *params, gpo
                         return;
                     }
 
-                    PkgList removePkgs = apt->getPackagesFromRepo(souceRecord);
+                    PkgList removePkgs = apt->getPackagesFromRepo(sourceRecord);
                     if (removePkgs.size() > 0) {
                         // Install/Update/Remove packages, or just simulate
                         bool ret;
                         ret = apt->runTransaction(PkgList(),
                                                   removePkgs,
-                                                  PkgList(),
                                                   PkgList(),
                                                   false,
                                                   transaction_flags,
@@ -986,7 +964,7 @@ static void backend_repo_manager_thread(PkBackendJob *job, GVariant *params, gpo
 
                 // Now if we are not simulating remove the repository
                 if (!pk_bitfield_contain(transaction_flags, PK_TRANSACTION_FLAG_ENUM_SIMULATE)) {
-                    sourcesList.RemoveSource(souceRecord);
+                    sourcesList.RemoveSource(sourceRecord);
 
                     // Commit changes
                     if (!sourcesList.UpdateSources()) {
@@ -1093,7 +1071,6 @@ PkBitfield pk_backend_get_roles(PkBackend *backend)
                 PK_ROLE_ENUM_REPAIR_SYSTEM,
                 PK_ROLE_ENUM_REPO_REMOVE,
                 PK_ROLE_ENUM_INSTALL_FILES,
-                PK_ROLE_ENUM_PURGE_PACKAGES,
                 -1);
 
     return roles;

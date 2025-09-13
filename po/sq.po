@@ -22,6 +22,12 @@ msgstr "(sekonda)"
 msgid "A correct role is required"
 msgstr "Është i domosdoshëm një rol i saktë"
 
+#. TRANSLATORS: the user did not
+#. * specify anything about what to
+#. * download or where
+msgid "A destination directory and the package names to download are required"
+msgstr "Një drejtori vendndodhje dhe emrat e paketave për t’u shkarkuar janë të domosdoshëm"
+
 msgid "A filename is required"
 msgstr "Emër kartele i domosdoshëm"
 
@@ -138,6 +144,12 @@ msgstr "Që të anulohet një akt i nisur jo prej jush, lypset mirëfilltësim"
 msgid "Authentication is required to change software repository parameters"
 msgstr "Që të ndryshohen parametra deposh software-i, lypset mirëfilltësim"
 
+msgid "Authentication is required to clear the offline updates message"
+msgstr "Që të spastrohen mesazhe përditësimesh pa qenë në linjë, duhet bërë mirëfilltësimi"
+
+msgid "Authentication is required to consider a key used for signing software as trusted"
+msgstr "Që një kyç të peshohet si i besueshëm për nënshkrim software-i, është e domosdoshme të bëhet mirëfilltësimi"
+
 msgid "Authentication is required to downgrade software"
 msgstr "Që software-i të kalohet në version më të vjetër, lypset mirëfilltësim"
 
@@ -161,6 +173,9 @@ msgstr "Që të riparohet software i instaluar, lypset mirëfilltësim"
 
 msgid "Authentication is required to set the network proxy used for downloading software"
 msgstr "Që të ujdiset ndërmjetës i përdorur për shkarkim software-i, lypset mirëfilltësim"
+
+msgid "Authentication is required to trigger offline updates"
+msgstr "Që të shkaktohen përditësime pa qenë në linjë, duhet bërë mirëfilltësimi"
 
 msgid "Authentication is required to update software"
 msgstr "Që të përditësohet software, lypset mirëfilltësim"
@@ -269,6 +284,9 @@ msgstr "S’u gjet urdhër, urdhrat e vlefshëm janë:"
 msgid "Committing changes"
 msgstr "Po depozitohen ndryshime"
 
+msgid "Config file was not found."
+msgstr "S’u gjet kartelë formësimi."
+
 #. TRANSLATORS: transaction state, we are copying package files before or
 #. after the transaction
 msgid "Copying files"
@@ -339,9 +357,17 @@ msgstr "U shkarkua"
 msgid "Downloading"
 msgstr "Po shkarkohet"
 
+#. TRANSLATORS: downloading repo data so we can search
+msgid "Downloading details about the software repositories."
+msgstr "Po shkarkohen hollësi rreth depove të software-it."
+
 #. TRANSLATORS: transaction state, downloading metadata
 msgid "Downloading file lists"
 msgstr "Po shkarkohem lista kartelash"
+
+#. TRANSLATORS: downloading file lists so we can search
+msgid "Downloading filelists (this may take some time to complete)."
+msgstr "Po shkarkohen lista kartelash (kjo mund të dojë ca kohë të plotësohet)."
 
 #. TRANSLATORS: transaction state, downloading metadata
 msgid "Downloading groups"
@@ -375,6 +401,11 @@ msgstr "Kohëzgjatje"
 #. TRANSLATORS: if the repo is enabled
 msgid "Enabled"
 msgstr "Të aktivizuar"
+
+#. TRANSLATORS: this is another name for a software licence that has to be
+#. read before installing
+msgid "End user licence agreement required"
+msgstr "Pranimi i licencës së përdoruesit është i domosdoshëm"
 
 #. TRANSLATORS: The type of update
 msgid "Enhancement"
@@ -418,9 +449,19 @@ msgstr "S’u arrit të instalohen paketa"
 msgid "Failed to launch:"
 msgstr "S’u arrit të nisej:"
 
+#. TRANSLATORS: The placeholder is an error message
+#, c-format
+msgid "Failed to load config file: %s"
+msgstr "S’u arrit të ngarkohet kartelë formësimi: %s"
+
 #. TRANSLATORS: cannot load the backend the user specified
 msgid "Failed to load the backend"
 msgstr "S’u arrit të ngarkohej pjesa e pasme"
+
+#. TRANSLATORS: cannot load the backend the user specified
+#, c-format
+msgid "Failed to load the backend: %s"
+msgstr "S’u arrit të ngarkohej mekanizmi i pasmë: %s"
 
 #. TRANSLATORS: probably not yet installed
 msgid "Failed to load the config file"
@@ -909,6 +950,10 @@ msgstr "Rol"
 msgid "Run similar command:"
 msgstr "Xhironi urdhër të ngjashëm:"
 
+#. TRANSLATORS: command line argument, this command is not a priority
+msgid "Run the command using idle network bandwidth and also using less power"
+msgstr "Xhiroje urdhrin duke përdorur gjerësi bande rrjeti jo me ngarkesë dhe duke përdorur gjithashtu më pak energji"
+
 #. TRANSLATORS: transaction state, just started
 msgid "Running"
 msgstr "Po xhiron"
@@ -971,6 +1016,10 @@ msgstr "Rregulloni mundësi depoje"
 #. TRANSLATORS: command line argument, use a filter to narrow down results
 msgid "Set the filter, e.g. installed"
 msgstr "Caktoni filtrin, p.sh., e instaluar"
+
+#. TRANSLATORS: The role of the transaction, in present tense
+msgid "Setting data"
+msgstr "Po ujdisen të dhëna"
 
 #. TRANSLATORS: turn on all debugging
 msgid "Show debugging information for all files"
@@ -1109,6 +1158,10 @@ msgstr "Paketat vijuese duhet të hiqen:"
 msgid "The following packages have to be updated:"
 msgstr "Paketat vijuese duhet të përditësohen:"
 
+#. TRANSLATORS: command line argument, just output without fancy formatting
+msgid "The maximum metadata cache age (in seconds). Use -1 to use only cache, 1 to reload cache."
+msgstr "Maksimum moshe fshehtine tejtëdhënash (në sekonda). Përdorni -1, që të përdoret vetëm fshehtinë, 1 që të ringarkohet fshehtina."
+
 #. TRANSLATORS: tell the user what package provides the command
 msgid "The package providing this file is:"
 msgstr "Paketa që furnizon këtë kartelë është:"
@@ -1116,6 +1169,11 @@ msgstr "Paketa që furnizon këtë kartelë është:"
 #. TRANSLATORS: The network settings could not be sent
 msgid "The proxy could not be set"
 msgstr "Ndërmjetësi s’u ujdis dot"
+
+#. TRANSLATORS: There was an error finding a package
+#. * for installation, it may already be installed.
+msgid "The selected packages may already be installed."
+msgstr "Paketat e përzgjedhura mund të jenë instaluar tashmë."
 
 #. TRANSLATORS: tell the user we've not done anything
 msgid "The signature was not accepted."
@@ -1162,6 +1220,10 @@ msgstr "Tani s’ka përmirësime gati."
 #, c-format
 msgid "This tool could not find all the packages: %s"
 msgstr "Ky mjet s’gjeti dot krejt paketat: %s"
+
+#. TRANSLATORS: We were unable to find a package for installation.
+msgid "This tool could not find any available package."
+msgstr "Ky mjet s’gjeti dot ndonjë paketë të gatshme."
 
 #. TRANSLATORS: There was an error finding a package
 #. * for installation. The detailed error follows.
@@ -1272,6 +1334,9 @@ msgstr "Përmirëso Sistemin"
 #. TRANSLATORS: this is the user ID of the user that started the action
 msgid "User ID"
 msgstr "ID Përdoruesi"
+
+msgid "User aborted selection"
+msgstr "Përdoruesi ndërpreu përzgjedhjen"
 
 #. TRANSLATORS: this is the username, e.g. hughsie
 msgid "Username"

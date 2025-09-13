@@ -98,10 +98,9 @@ struct PkEnginePrivate
 	guint			 owner_id;
 	GDBusNodeInfo		*introspection;
 	GDBusConnection		*connection;
-#ifdef HAVE_SYSTEMD_SD_LOGIN_H
 	GDBusProxy		*logind_proxy;
 	gint			 logind_fd;
-#endif
+	gboolean		 logind_tried;
 };
 
 enum {
@@ -256,7 +255,6 @@ pk_engine_emit_offline_property_changed (PkEngine *engine,
 static void
 pk_engine_inhibit (PkEngine *engine)
 {
-#ifdef HAVE_SYSTEMD_SD_LOGIN_H
 	g_autoptr(GError) error = NULL;
 	g_autoptr(GUnixFDList) out_fd_list = NULL;
 	g_autoptr(GVariant) res = NULL;
@@ -297,19 +295,16 @@ pk_engine_inhibit (PkEngine *engine)
 	}
 	engine->priv->logind_fd = g_unix_fd_list_get (out_fd_list, 0, NULL);
 	g_debug ("opened logind fd %i", engine->priv->logind_fd);
-#endif
 }
 
 static void
 pk_engine_uninhibit (PkEngine *engine)
 {
-#ifdef HAVE_SYSTEMD_SD_LOGIN_H
 	if (engine->priv->logind_fd == 0)
 		return;
 	g_debug ("closed logind fd %i", engine->priv->logind_fd);
 	close (engine->priv->logind_fd);
 	engine->priv->logind_fd = 0;
-#endif
 }
 
 static void
@@ -326,6 +321,21 @@ pk_engine_set_locked (PkEngine *engine, gboolean is_locked)
 	pk_engine_emit_property_changed (engine,
 					 "Locked",
 					 g_variant_new_boolean (is_locked));
+}
+
+static void
+pk_engine_backend_installed_changed_cb (PkBackend *backend, PkEngine *engine)
+{
+	g_return_if_fail (PK_IS_ENGINE (engine));
+
+	g_debug ("emitting InstalledChanged");
+	g_dbus_connection_emit_signal (engine->priv->connection,
+				       NULL,
+				       PK_DBUS_PATH,
+				       PK_DBUS_INTERFACE,
+				       "InstalledChanged",
+				       NULL,
+				       NULL);
 }
 
 static void
@@ -1006,6 +1016,15 @@ _g_variant_new_maybe_string (const gchar *value)
 	return g_variant_new_string (value);
 }
 
+static gboolean
+pk_engine_offline_is_triggered (const gchar *filename)
+{
+	/* look at the symlink target */
+	g_autofree gchar *link = NULL;
+	link = g_file_read_link (PK_OFFLINE_TRIGGER_FILENAME, NULL);
+	return g_strcmp0 (link, filename) == 0;
+}
+
 static GVariant *
 pk_engine_offline_get_property (GDBusConnection *connection_, const gchar *sender,
 				const gchar *object_path, const gchar *interface_name,
@@ -1036,18 +1055,12 @@ pk_engine_offline_get_property (GDBusConnection *connection_, const gchar *sende
 		return g_variant_new_boolean (ret);
 	}
 
-	/* look at the symlink target */
 	if (g_strcmp0 (property_name, "UpdateTriggered") == 0) {
-		g_autofree gchar *link = NULL;
-		link = g_file_read_link (PK_OFFLINE_TRIGGER_FILENAME, NULL);
-		return g_variant_new_boolean (g_strcmp0 (link, PK_OFFLINE_PREPARED_FILENAME) == 0);
+		return g_variant_new_boolean (pk_engine_offline_is_triggered (PK_OFFLINE_PREPARED_FILENAME));
 	}
 
-	/* look at the symlink target */
 	if (g_strcmp0 (property_name, "UpgradeTriggered") == 0) {
-		g_autofree gchar *link = NULL;
-		link = g_file_read_link (PK_OFFLINE_TRIGGER_FILENAME, NULL);
-		return g_variant_new_boolean (g_strcmp0 (link, PK_OFFLINE_PREPARED_UPGRADE_FILENAME) == 0);
+		return g_variant_new_boolean (pk_engine_offline_is_triggered (PK_OFFLINE_PREPARED_UPGRADE_FILENAME));
 	}
 
 	if (g_strcmp0 (property_name, "PreparedUpgrade") == 0) {
@@ -1148,8 +1161,7 @@ pk_engine_is_package_history_interesing (PkPackage *package)
 
 	switch (pk_package_get_info (package)) {
 	case PK_INFO_ENUM_INSTALLING:
-    case PK_INFO_ENUM_REMOVING:
-	case PK_INFO_ENUM_PURGING:
+	case PK_INFO_ENUM_REMOVING:
 	case PK_INFO_ENUM_UPDATING:
 		ret = TRUE;
 		break;
@@ -1663,6 +1675,15 @@ pk_engine_offline_method_call (GDBusConnection *connection_, const gchar *sender
 							       tmp);
 			return;
 		}
+		if (pk_engine_offline_is_triggered (PK_OFFLINE_PREPARED_FILENAME)) {
+			/* already triggered, just update the action without authentication */
+			if (pk_offline_auth_set_action (action, &error))
+				g_dbus_method_invocation_return_value (invocation, NULL);
+			else
+				g_dbus_method_invocation_return_gerror (invocation, error);
+			return;
+		}
+
 		helper = g_new0 (PkEngineOfflineAsyncHelper, 1);
 		helper->engine = g_object_ref (engine);
 		helper->role = PK_ENGINE_OFFLINE_ROLE_TRIGGER;
@@ -1690,6 +1711,15 @@ pk_engine_offline_method_call (GDBusConnection *connection_, const gchar *sender
 							       tmp);
 			return;
 		}
+		if (pk_engine_offline_is_triggered (PK_OFFLINE_PREPARED_UPGRADE_FILENAME)) {
+			/* already triggered, just update the action without authentication */
+			if (pk_offline_auth_set_action (action, &error))
+				g_dbus_method_invocation_return_value (invocation, NULL);
+			else
+				g_dbus_method_invocation_return_gerror (invocation, error);
+			return;
+		}
+
 		helper = g_new0 (PkEngineOfflineAsyncHelper, 1);
 		helper->engine = g_object_ref (engine);
 		helper->role = PK_ENGINE_OFFLINE_ROLE_TRIGGER_UPGRADE;
@@ -1725,9 +1755,55 @@ pk_engine_offline_method_call (GDBusConnection *connection_, const gchar *sender
 		g_dbus_method_invocation_return_value (invocation, value);
 		return;
 	}
+	if (g_strcmp0 (method_name, "GetResults") == 0) {
+		g_autoptr(PkResults) results = NULL;
+		g_autoptr(PkPackageSack) results_sack = NULL;
+		gboolean success = FALSE;
+		PkErrorEnum error_code = PK_ERROR_ENUM_UNKNOWN;
+		g_autofree gchar *error_msg = NULL;
+		g_autoptr(PkError) pk_error = NULL;
+		GVariant *value = NULL;
+
+		results = pk_offline_get_results (&error);
+		if (results == NULL) {
+			g_dbus_method_invocation_return_error (invocation,
+							       PK_ENGINE_ERROR,
+							       PK_ENGINE_ERROR_INVALID_STATE,
+							       "%s", error->message);
+			return;
+		}
+
+		pk_error = pk_results_get_error_code (results);
+		success = pk_results_get_exit_code (results) == PK_EXIT_ENUM_SUCCESS;
+		if (!success) {
+			pk_error = pk_results_get_error_code (results);
+			if (pk_error == NULL) {
+				error_code = PK_ERROR_ENUM_UNKNOWN;
+				error_msg = g_strdup ("Offline update failed without error_code set");
+			} else {
+				error_code = pk_error_get_code (pk_error),
+				error_msg = g_strdup (pk_error_get_details (pk_error));
+			}
+		}
+
+		results_sack = pk_results_get_package_sack (results);
+
+		if (error_msg == NULL)
+			error_msg = g_strdup("");
+
+		value = g_variant_new ("(b^asutus)",
+				       success,
+				       pk_package_sack_get_ids (results_sack),
+				       pk_results_get_role (results),
+				       pk_offline_get_results_mtime (&error),
+				       error_code,
+				       error_msg);
+
+		g_dbus_method_invocation_return_value (invocation, value);
+		return;
+	}
 }
 
-#ifdef HAVE_SYSTEMD_SD_LOGIN_H
 static void
 pk_engine_proxy_logind_cb (GObject *source_object,
 			   GAsyncResult *res,
@@ -1735,12 +1811,28 @@ pk_engine_proxy_logind_cb (GObject *source_object,
 {
 	g_autoptr(GError) error = NULL;
 	PkEngine *engine = PK_ENGINE (user_data);
+	GDBusConnection* connection;
 
 	engine->priv->logind_proxy = g_dbus_proxy_new_finish (res, &error);
-	if (engine->priv->logind_proxy == NULL)
-		g_warning ("failed to connect to logind: %s", error->message);
+	// https://gitlab.gnome.org/GNOME/glib/-/issues/879
+	if (g_dbus_proxy_get_name_owner (engine->priv->logind_proxy) == NULL) {
+		g_warning ("failed to connect to logind: %s", error ? error->message : "no such service");
+		if (!engine->priv->logind_tried) {
+			engine->priv->logind_tried = TRUE;
+			connection = g_dbus_proxy_get_connection (engine->priv->logind_proxy);
+			g_clear_object (&engine->priv->logind_proxy);
+			g_dbus_proxy_new (connection,
+				G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
+				NULL,
+				"org.freedesktop.ConsoleKit",
+				"/org/freedesktop/ConsoleKit",
+				"org.freedesktop.ConsoleKit.Manager",
+				NULL, /* GCancellable */
+				pk_engine_proxy_logind_cb,
+				engine);
+		}
+	}
 }
-#endif
 
 static void
 pk_engine_on_bus_acquired_cb (GDBusConnection *connection,
@@ -1763,7 +1855,6 @@ pk_engine_on_bus_acquired_cb (GDBusConnection *connection,
 	/* save copy for emitting signals */
 	engine->priv->connection = g_object_ref (connection);
 
-#ifdef HAVE_SYSTEMD_SD_LOGIN_H
 	/* connect to logind */
 	g_dbus_proxy_new (connection,
 			  G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES,
@@ -1774,7 +1865,6 @@ pk_engine_on_bus_acquired_cb (GDBusConnection *connection,
 			  NULL, /* GCancellable */
 			  pk_engine_proxy_logind_cb,
 			  engine);
-#endif
 
 	/* register org.freedesktop.PackageKit */
 	registration_id = g_dbus_connection_register_object (connection,
@@ -1909,13 +1999,11 @@ pk_engine_finalize (GObject *object)
 	if (engine->priv->connection != NULL)
 		g_object_unref (engine->priv->connection);
 
-#ifdef HAVE_SYSTEMD_SD_LOGIN_H
 	/* uninhibit */
 	if (engine->priv->logind_fd != 0)
 		close (engine->priv->logind_fd);
 	if (engine->priv->logind_proxy != NULL)
 		g_object_unref (engine->priv->logind_proxy);
-#endif
 
 	/* compulsory gobjects */
 	g_timer_destroy (engine->priv->timer);
@@ -1943,6 +2031,8 @@ pk_engine_new (GKeyFile *conf)
 	engine = g_object_new (PK_TYPE_ENGINE, NULL);
 	engine->priv->conf = g_key_file_ref (conf);
 	engine->priv->backend = pk_backend_new (engine->priv->conf);
+	g_signal_connect (engine->priv->backend, "installed-changed",
+			  G_CALLBACK (pk_engine_backend_installed_changed_cb), engine);
 	g_signal_connect (engine->priv->backend, "repo-list-changed",
 			  G_CALLBACK (pk_engine_backend_repo_list_changed_cb), engine);
 	g_signal_connect (engine->priv->backend, "updates-changed",

@@ -2,6 +2,7 @@
  *
  * Copyright (c) 1999 Patrick Cole <z@amused.net>
  *           (c) 2002 Synaptic development team
+*            (c) 2018-2025 Matthias Klumpp <matthias@tenstral.net>
  *
  * Author: Patrick Cole <z@amused.net>
  *         Michael Vogt <mvo@debian.org>
@@ -26,6 +27,10 @@
 #ifndef APT_SOURCESLIST_H
 #define APT_SOURCESLIST_H
 
+#include <apt-pkg/fileutl.h>
+#include <apt-pkg/tagfile.h>
+#include <apt-pkg/metaindex.h>
+
 #include <string>
 #include <list>
 
@@ -36,35 +41,34 @@ public:
     enum RecType {
         Deb = 1 << 0,
         DebSrc = 1 << 1,
-        Rpm = 1 << 2,
-        RpmSrc = 1 << 3,
-        Disabled = 1 << 4,
-        Comment = 1 << 5,
-        RpmDir = 1 << 6,
-        RpmSrcDir = 1 << 7,
-        Repomd = 1 << 8,
-        RepomdSrc = 1 << 9
+        Disabled = 1 << 2,
+        Comment = 1 << 3,
     };
 
     struct SourceRecord {
         unsigned int Type;
         string VendorID;
-        string URI;
+        string PrimaryURI;
+        std::vector<std::string> URIs;
         string Dist;
         string *Sections;
         unsigned short NumSections;
-        string joinedSections();
+        string Comment;
+
+        string SourceFile;
+        uint Deb822StanzaIdx;
+
+        string joinedSections(const std::string &separator = " ");
         string niceName();
         string repoId();
         bool hasSection(const char *component);
-        string Comment;
-        string SourceFile;
 
         bool SetType(string);
         string GetType();
         bool SetURI(string);
+        bool SetURIs(const std::vector<std::string> &newURIs);
 
-        SourceRecord():Type(0), Sections(0), NumSections(0) {}
+        SourceRecord():Type(0), Sections(0), NumSections(0), Deb822StanzaIdx(0) {}
         ~SourceRecord() {
             if (Sections) {
                 delete [] Sections;
@@ -85,6 +89,13 @@ public:
 private:
     SourceRecord *AddSourceNode(SourceRecord &);
     VendorRecord *AddVendorNode(VendorRecord &);
+    bool OpenConfigurationFileFd(std::string const &File, FileFd &Fd);
+    bool ParseDeb822Stanza(const char*Type,
+                           pkgTagSection &Tags,
+                           unsigned int const stanzaIdx,
+                           FileFd &Fd);
+    bool UpdateSourceLegacy(const std::string &filename);
+    bool UpdateSourceDeb822(const std::string &filename);
 
 public:
     SourceRecord *AddSource(RecType Type,
@@ -96,6 +107,8 @@ public:
     SourceRecord *AddEmptySource();
     void RemoveSource(SourceRecord *&);
     void SwapSources( SourceRecord *&, SourceRecord *& );
+    bool ReadSourceDeb822(string listpath);
+    bool ReadSourceLegacy(string listpath);
     bool ReadSourcePart(string listpath);
     bool ReadSourceDir(string Dir);
     bool ReadSources();

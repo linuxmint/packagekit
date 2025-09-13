@@ -1,14 +1,12 @@
 Source: packagekit
 Section: admin
 Priority: optional
-Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
-XSBC-Original-Maintainer: Matthias Klumpp <mak@debian.org>
+Maintainer: Matthias Klumpp <mak@debian.org>
 Uploaders: Julian Andres Klode <jak@debian.org>
 Build-Depends: bash-completion,
                debhelper-compat (= 13),
                gir1.2-glib-2.0 (>= 1.36),
                gobject-introspection (>= 1.36),
-               gobject-introspection-bin,
                gtk-doc-tools,
                libappstream-dev (>= 0.16.0),
                libapt-pkg-dev (>= 1.9.2),

@@ -109,7 +109,6 @@ bool AptJob::init(gchar **localDebs)
     case PK_ROLE_ENUM_INSTALL_PACKAGES:
     case PK_ROLE_ENUM_INSTALL_FILES:
     case PK_ROLE_ENUM_REMOVE_PACKAGES:
-    case PK_ROLE_ENUM_PURGE_PACKAGES:
     case PK_ROLE_ENUM_UPDATE_PACKAGES:
         withLock = true;
         break;
@@ -568,21 +567,18 @@ void AptJob::emitUpdates(PkgList &output, PkBitfield filters)
         std::string archive = vf.File().Archive() == NULL ? "" : vf.File().Archive();
         std::string label   = vf.File().Label() == NULL ? "" : vf.File().Label();
 
-        if (origin.compare("Debian") == 0 ||
-            origin.compare("Ubuntu") == 0) {
-            if (ends_with(archive, "-security") ||
-                    label.compare("Debian-Security") == 0) {
-                state = PK_INFO_ENUM_SECURITY;
-            } else if (ends_with(archive, "-backports")) {
-                state = PK_INFO_ENUM_ENHANCEMENT;
-            } else if (ends_with(archive, "-proposed-updates") || ends_with(archive, "-updates-proposed")) {
-                state = PK_INFO_ENUM_LOW;
-            } else if (ends_with(archive, "-updates")) {
-                state = PK_INFO_ENUM_BUGFIX;
-            }
-        } else if (origin.compare("Backports.org archive") == 0 ||
-                   ends_with(origin, "-backports")) {
+        if (origin.compare("Backports.org archive") == 0 ||
+            ends_with(origin, "-backports")) {
             state = PK_INFO_ENUM_ENHANCEMENT;
+        } else if (ends_with(archive, "-security") ||
+                   label.compare("Debian-Security") == 0) {
+            state = PK_INFO_ENUM_SECURITY;
+        } else if (ends_with(archive, "-backports")) {
+            state = PK_INFO_ENUM_ENHANCEMENT;
+        } else if (ends_with(archive, "-proposed-updates") || ends_with(archive, "-updates-proposed")) {
+            state = PK_INFO_ENUM_LOW;
+        } else if (ends_with(archive, "-updates")) {
+            state = PK_INFO_ENUM_BUGFIX;
         }
 
         // NOTE: Frontends expect us to pass the update urgency as both its state *and* actual urgency value here.
@@ -751,7 +747,7 @@ bool AptJob::getArchive(pkgAcquire *Owner,
         StoreFilename = QuoteString(Version.ParentPkg().Name(),"_:") + '_' +
                 QuoteString(Version.VerStr(),"_:") + '_' +
                 QuoteString(Version.Arch(),"_:.") +
-                "." + flExtension(Parse.FileName());
+                "." + std::string{flExtension(Parse.FileName())};
     }
 
     for (; Vf.end() == false; Vf++) {
@@ -780,7 +776,7 @@ bool AptJob::getArchive(pkgAcquire *Owner,
                                  Version.ParentPkg().Name());
         }
 
-        string DestFile = directory + "/" + flNotDir(StoreFilename);
+        string DestFile = directory + "/" + std::string{flNotDir(StoreFilename)};
 
         // Create the item
         new pkgAcqFile(Owner,
@@ -810,7 +806,6 @@ void AptJob::emitPackageDetail(const pkgCache::VerIterator &ver)
         return;
     }
 
-    const pkgCache::PkgIterator &pkg = ver.ParentPkg();
     std::string section = ver.Section() == NULL ? "" : ver.Section();
 
     size_t found;
@@ -820,23 +815,16 @@ void AptJob::emitPackageDetail(const pkgCache::VerIterator &ver)
     pkgCache::VerFileIterator vf = ver.FileList();
     pkgRecords::Parser &rec = m_cache->GetPkgRecords()->Lookup(vf);
 
-    long size;
-    if (pkg->CurrentState == pkgCache::State::Installed && pkg.CurrentVer() == ver) {
-        // if the package is installed emit the installed size
-        size = ver->InstalledSize;
-    } else {
-        size = ver->Size;
-    }
-
     g_autofree gchar *package_id = m_cache->buildPackageId(ver);
-    pk_backend_job_details(m_job,
-                           package_id,
-                           m_cache->getShortDescription(ver).c_str(),
-                           "unknown",
-                           get_enum_group(section),
-                           m_cache->getLongDescriptionParsed(ver).c_str(),
-                           rec.Homepage().c_str(),
-                           size);
+    pk_backend_job_details_full (m_job,
+                                 package_id,
+                                 m_cache->getShortDescription(ver).c_str(),
+                                 "unknown",
+                                 get_enum_group(section),
+                                 m_cache->getLongDescriptionParsed(ver).c_str(),
+                                 rec.Homepage().c_str(),
+                                 ver->InstalledSize,
+                                 ver->Size);
 }
 
 void AptJob::emitDetails(PkgList &pkgs)
@@ -1110,8 +1098,8 @@ PkgList AptJob::getPackagesFromRepo(SourcesList::SourceRecord *&rec)
             continue;
         }
 
-        // Check if the site the package comes from is include in the Repo uri
-        if (vf.File().Site() == NULL || rec->URI.find(vf.File().Site()) == std::string::npos) {
+        // Check if the site the package comes from is included in the Repo uri
+        if (vf.File().Site() == NULL || rec->PrimaryURI.find(vf.File().Site()) == std::string::npos) {
             continue;
         }
 
@@ -2073,22 +2061,6 @@ void AptJob::updateInterface(int fd, int writeFd, bool *errorEmitted)
                         emitPackage(ver, PK_INFO_ENUM_REMOVING);
                         emitPackageProgress(ver, PK_STATUS_ENUM_REMOVE, m_lastSubProgress);
                     }
-                } else if (starts_with(str, "Purging")) {
-                    // cout << "Found Removing! " << line << endl;
-                    if (m_lastSubProgress >= 100 && !m_lastPackage.empty()) {
-                        // cout << "FINISH the last package: " << m_lastPackage << endl;
-                        const pkgCache::VerIterator &ver = findTransactionPackage(m_lastPackage);
-                        if (!ver.end()) {
-                            emitPackage(ver, PK_INFO_ENUM_FINISHED);
-                        }
-                    }
-                    m_lastSubProgress += 25;
-
-                    const pkgCache::VerIterator &ver = findTransactionPackage(pkg);
-                    if (!ver.end()) {
-                        emitPackage(ver, PK_INFO_ENUM_PURGING);
-                        emitPackageProgress(ver, PK_STATUS_ENUM_PURGE, m_lastSubProgress);
-                    }
                 } else if (starts_with(str, "Installed") ||
                            starts_with(str, "Removed")) {
                     // cout << "Found FINISHED! " << line << endl;
@@ -2276,7 +2248,7 @@ PkgList AptJob::resolveLocalFiles(gchar **localDebs)
     return ret;
 }
 
-bool AptJob::runTransaction(const PkgList &install, const PkgList &remove, const PkgList &purge, const PkgList &update,
+bool AptJob::runTransaction(const PkgList &install, const PkgList &remove, const PkgList &update,
                              bool fixBroken, PkBitfield flags, bool autoremove)
 {
     pk_backend_job_set_status (m_job, PK_STATUS_ENUM_RUNNING);
@@ -2340,14 +2312,7 @@ bool AptJob::runTransaction(const PkgList &install, const PkgList &remove, const
             if (m_cancel)
                 break;
 
-            m_cache->tryToRemove(Fix, pkInfo, false);
-        }
-
-        for (const PkgInfo &pkInfo : purge) {
-             if (m_cancel)
-                 break;
- 
-            m_cache->tryToRemove(Fix, pkInfo, true);
+            m_cache->tryToRemove(Fix, pkInfo);
         }
 
         // Call the scored problem resolver
@@ -2370,7 +2335,7 @@ bool AptJob::runTransaction(const PkgList &install, const PkgList &remove, const
         for (pkgCache::PkgIterator pkg = (*m_cache)->PkgBegin(); ! pkg.end(); ++pkg) {
             const pkgCache::VerIterator &ver = pkg.CurrentVer();
             if (!ver.end() && !initial_garbage.contains(pkg) && m_cache->isGarbage(pkg))
-                m_cache->tryToRemove (Fix, PkgInfo(ver), purge.size() > 0);
+                m_cache->tryToRemove (Fix, PkgInfo(ver));
         }
     }
 

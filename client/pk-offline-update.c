@@ -32,7 +32,13 @@
 #include <packagekit-glib2/pk-offline-private.h>
 #include <stdlib.h>
 #include <unistd.h>
+#ifdef HAVE_SYSTEMD_SD_JOURNAL_H
 #include <systemd/sd-journal.h>
+#else
+#define LOG_INFO STDERR_FILENO
+#define LOG_WARNING STDERR_FILENO
+#define sd_journal_print dprintf
+#endif
 
 static void
 pk_offline_update_set_plymouth_msg (const gchar *msg)
@@ -113,6 +119,7 @@ pk_offline_update_progress_cb (PkProgress *progress,
 	PkStatusEnum status;
 	gint percentage;
 	g_autofree gchar *msg = NULL;
+	g_autofree gchar *tmp_perc = NULL;
 	g_autoptr(PkPackage) pkg = NULL;
 
 	switch (type) {
@@ -135,10 +142,6 @@ pk_offline_update_progress_cb (PkProgress *progress,
 			msg = g_strdup_printf ("Removing %s",
 					       pk_package_get_name (pkg));
 			pk_progress_bar_start (progressbar, msg);
-        } else if (info == PK_INFO_ENUM_PURGING) {
-            msg = g_strdup_printf ("Purging %s",
-                           pk_package_get_name (pkg));
-            pk_progress_bar_start (progressbar, msg);
 		}
 		sd_journal_print (LOG_INFO,
 				  "package %s\t%s-%s.%s (%s)",
@@ -154,15 +157,18 @@ pk_offline_update_progress_cb (PkProgress *progress,
 			return;
 		sd_journal_print (LOG_INFO, "percentage %i%%", percentage);
 
+		/* TRANSLATORS: this is a percentage value we use in messages, e.g. "90%" */
+		tmp_perc = g_strdup_printf (_("%i%%"), percentage);
+
 		role = pk_progress_get_role (progress);
 		if (role == PK_ROLE_ENUM_UPGRADE_SYSTEM) {
 			/* TRANSLATORS: this is the message we send plymouth to
 			 * advise of the new percentage completion when installing system upgrades */
-			msg = g_strdup_printf ("%s - %i%%", _("Installing System Upgrade"), percentage);
+			msg = g_strdup_printf ("%s — %s", _("Installing System Upgrade"), tmp_perc);
 		} else {
 			/* TRANSLATORS: this is the message we send plymouth to
 			 * advise of the new percentage completion when installing updates */
-			msg = g_strdup_printf ("%s - %i%%", _("Installing Updates"), percentage);
+			msg = g_strdup_printf ("%s — %s", _("Installing Updates"), tmp_perc);
 		}
 		if (percentage > 10)
 			pk_offline_update_set_plymouth_msg (msg);
@@ -375,7 +381,11 @@ pk_offline_update_do_update (PkTask *task, PkProgressBar *progressbar, GError **
 	/* get the list of packages to update */
 	package_ids = pk_offline_get_prepared_ids (error);
 	if (package_ids == NULL) {
-		g_prefix_error (error, "failed to read %s: ", PK_OFFLINE_PREPARED_FILENAME);
+		g_set_error (error,
+			     PK_OFFLINE_ERROR,
+			     PK_OFFLINE_ERROR_FAILED,
+			     "failed to read %s",
+			     PK_OFFLINE_PREPARED_FILENAME);
 		return FALSE;
 	}
 
@@ -408,7 +418,10 @@ pk_offline_update_do_upgrade (PkTask *task, PkProgressBar *progressbar, GError *
 	/* get the version to upgrade to */
 	version = pk_offline_get_prepared_upgrade_version (error);
 	if (version == NULL) {
-	        g_prefix_error (error, "failed to get prepared system upgrade version: ");
+		g_set_error (error,
+			     PK_OFFLINE_ERROR,
+			     PK_OFFLINE_ERROR_FAILED,
+			     "failed to get prepared system upgrade version");
 	        return FALSE;
 	}
 
