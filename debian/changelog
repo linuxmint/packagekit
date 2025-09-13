@@ -1,3 +1,14 @@
+packagekit (1.3.1+mint1) gigi; urgency=medium
+
+  [ Clement Lefebvre ]
+  * Native source format
+  * Remove patches
+
+  [ Michael Webster ]
+  * Add 'purge' capability (apt backend only).
+
+ -- Clement Lefebvre <root@linuxmint.com>  Sat, 13 Sep 2025 16:38:42 +0100
+
 packagekit (1.3.1-1) unstable; urgency=medium
 
   [ Matthias Klumpp ]
