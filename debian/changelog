@@ -1,3 +1,10 @@
+packagekit (1.2.8+mint3) wilma; urgency=medium
+
+  [ Clement Lefebvre ]
+  * Rebase to include patch for CVE-2026-41651
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 01 May 2026 15:36:28 +0100
+
 packagekit (1.2.8-2ubuntu1.5) noble-security; urgency=medium
 
   * SECURITY UPDATE: TOCTOU Race on Transaction Flags (LP: #2148512)
