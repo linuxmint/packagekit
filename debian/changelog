@@ -1,9 +1,9 @@
-packagekit (1.2.6+mint1) faye; urgency=medium
+packagekit (1.2.6-5+deb12u1) bookworm-security; urgency=high
 
-  [ Michael Webster ]
-  * Add 'purge' capability (apt backend only).
+  * Non-maintainer upload by the Security Team.
+  * Do not allow re-invoking methods on non-new transactions
 
- -- Clement Lefebvre <root@linuxmint.com>  Wed, 23 Aug 2023 12:16:22 +0100
+ -- Salvatore Bonaccorso <carnil@debian.org>  Tue, 21 Apr 2026 16:49:31 +0200
 
 packagekit (1.2.6-5) unstable; urgency=medium
 

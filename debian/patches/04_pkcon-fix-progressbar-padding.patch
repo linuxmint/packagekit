@@ -1,0 +1,22 @@
+From de8977d1c0e8d23f7da5eef73977b6b98655e0a7 Mon Sep 17 00:00:00 2001
+From: Frank Dana <ferdnyc@gmail.com>
+Date: Fri, 20 Jan 2023 19:33:59 -0500
+Subject: [PATCH] pkcon: Widen progressbar text area
+
+---
+ client/pk-console.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/client/pk-console.c b/client/pk-console.c
+index bd57e82f3..b16a8e3c7 100644
+--- a/client/pk-console.c
++++ b/client/pk-console.c
+@@ -1639,7 +1639,7 @@ main (int argc, char *argv[])
+ 	g_autofree gchar *filter = NULL;
+ 	g_autofree gchar *options_help = NULL;
+ 	g_autofree gchar *summary = NULL;
+-	guint bar_padding = 30;
++	guint bar_padding = 40;
+ 	guint bar_size = 25;
+ 	struct winsize w;
+ 
