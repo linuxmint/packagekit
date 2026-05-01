@@ -1,8 +1,0 @@
-policy.diff
-01_strlen-cmp-memfix.patch
-02_identify-ubuntu.patch
-pk-client-Allow-debconf-helper-to-display-Wayland-wi.patch
-metainfo-Mark-PK-as-compulsory-for-most-desktops.patch
-apt-Fix-matching-gstreamer-pkgs-where-the-only-modifier-i.patch
-apt-Handle-gstreamer-64bit-suffix-on-any-architecture.patch
-Do-not-allow-re-invoking-methods-on-non-new-txn.patch
