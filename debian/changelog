@@ -1,3 +1,10 @@
+packagekit (1.2.5-2ubuntu3.1mint1) vera; urgency=medium
+
+  [ Clement Lefebvre ]
+  * Rebase to include patch for CVE-2026-41651
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 01 May 2026 15:32:06 +0100
+
 packagekit (1.2.5-2ubuntu3.1) jammy-security; urgency=medium
 
   * SECURITY UPDATE: TOCTOU Race on Transaction Flags (LP: #2148512)
