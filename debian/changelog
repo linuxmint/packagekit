@@ -1,3 +1,9 @@
+packagekit (1.2.6+mint2) faye; urgency=medium
+
+  * Rebase to include patch for CVE-2026-41651
+
+ -- Clement Lefebvre <root@linuxmint.com>  Fri, 01 May 2026 15:13:42 +0100
+
 packagekit (1.2.6-5+deb12u1) bookworm-security; urgency=high
 
   * Non-maintainer upload by the Security Team.
