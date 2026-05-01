@@ -1,16 +1,50 @@
-packagekit (1.2.8+mint2) xia; urgency=medium
+packagekit (1.2.8-2ubuntu1.5) noble-security; urgency=medium
 
-  [ Michael Webster ]
-  * pk-client.c: don't allow the PkTaskState to be destroyed before the task completes.
+  * SECURITY UPDATE: TOCTOU Race on Transaction Flags (LP: #2148512)
+    - debian/patches/Do-not-allow-re-invoking-methods-on-non-new-txn.patch:
+      do not allow re-invoking methods on non-new transactions in
+      src/pk-transaction.c.
+    - CVE number pending
 
- -- Clement Lefebvre <root@linuxmint.com>  Mon, 25 Nov 2024 09:48:57 +0000
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Mon, 20 Apr 2026 08:20:57 -0400
 
-packagekit (1.2.8+mint1) wilma; urgency=medium
+packagekit (1.2.8-2ubuntu1.4) noble; urgency=medium
 
-  [ Michael Webster ]
-  * Add 'purge' capability (apt backend only).
+  * d/p/apt-Handle-gstreamer-64bit-suffix-on-any-architecture.patch:
+    Fix matching GStreamer capabilities on ARM64 and other architectures
+    (LP: #2060730)
 
- -- Clement Lefebvre <root@linuxmint.com>  Sun, 16 Jun 2024 14:54:29 +0100
+ -- Alessandro Astone <alessandro.astone@canonical.com>  Thu, 09 Oct 2025 11:00:52 +0200
+
+packagekit (1.2.8-2ubuntu1.3) noble; urgency=medium
+
+  * d/p/apt-Fix-matching-gstreamer-pkgs-where-the-only-modifier-i.patch:
+    Fix matching GStreamer capabilities, which would find no results in some
+    specific but common edge-cases (LP: #2060730).
+
+ -- Alessandro Astone <alessandro.astone@canonical.com>  Tue, 01 Jul 2025 11:00:56 +0200
+
+packagekit (1.2.8-2ubuntu1.2) noble; urgency=medium
+
+  * Backport patch to make PackageKit uninstallable from graphical software centers
+    (LP: #2066183)
+
+ -- Alessandro Astone <alessandro.astone@canonical.com>  Wed, 08 Jan 2025 17:35:09 +0100
+
+packagekit (1.2.8-2ubuntu1.1) noble; urgency=medium
+
+  * No-change rebuild to fix unintended dependency on apt which was in
+    noble-proposed back then, and caused packagekit to become uninstallable on
+    armhf (LP: #2091714)
+
+ -- Andreas Hasenack <andreas@canonical.com>  Fri, 13 Dec 2024 14:07:28 -0300
+
+packagekit (1.2.8-2ubuntu1) noble; urgency=medium
+
+  * Backport patch to fix showing the GTK debconf helper on Wayland
+    (LP: #2086773)
+
+ -- Alessandro Astone <alessandro.astone@canonical.com>  Mon, 11 Nov 2024 16:36:25 +0100
 
 packagekit (1.2.8-2build3) noble; urgency=medium
 
