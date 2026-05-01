@@ -1,0 +1,61 @@
+From 22656f21232702439bc6b7d10bb7ac65253b5e8d Mon Sep 17 00:00:00 2001
+From: Matthias Klumpp <matthias@tenstral.net>
+Date: Tue, 14 Apr 2026 16:12:18 +0200
+Subject: [PATCH] Do not allow re-invoking methods on non-new transactions
+
+This ensures that cached parameters (such a transaction flags) can not
+be changed on an already running transaction or a transaction that is
+waiting for authorization.
+
+It also prevents backwards state transitions in case a client
+misbehaves.
+[Salvatore Bonaccorso: Backport changes to version before fce95c935347
+("trivial: typos") in v1.3.3]
+---
+ src/pk-transaction.c | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
+
+diff --git a/src/pk-transaction.c b/src/pk-transaction.c
+index db64aab8f..82501b56f 100644
+--- a/src/pk-transaction.c
++++ b/src/pk-transaction.c
+@@ -5250,14 +5250,32 @@ pk_transaction_method_call (GDBusConnection *connection_, const gchar *sender,
+ 		pk_transaction_set_hints (transaction, parameters, invocation);
+ 		return;
+ 	}
+-	if (g_strcmp0 (method_name, "AcceptEula") == 0) {
+-		pk_transaction_accept_eula (transaction, parameters, invocation);
+-		return;
+-	}
+ 	if (g_strcmp0 (method_name, "Cancel") == 0) {
+ 		pk_transaction_cancel (transaction, parameters, invocation);
+ 		return;
+ 	}
++
++	/* All action methods below must only be invoked once on a new transaction.
++	 * Reject any attempt to re-invoke them after the transaction has been initialized,
++	 * preventing situations where a second D-Bus call could overwrite transaction flags
++	 * (or other cached state) after authorization has already been granted for the previous
++	 * request based on the old parameters. */
++	if (transaction->priv->state != PK_TRANSACTION_STATE_NEW) {
++		g_dbus_method_invocation_return_error (invocation,
++						       PK_TRANSACTION_ERROR,
++						       PK_TRANSACTION_ERROR_INVALID_STATE,
++						       "cannot call %s on transaction %s: "
++						       "already in state %s",
++						       method_name,
++						       transaction->priv->tid,
++						       pk_transaction_state_to_string (transaction->priv->state));
++		return;
++	}
++
++	if (g_strcmp0 (method_name, "AcceptEula") == 0) {
++		pk_transaction_accept_eula (transaction, parameters, invocation);
++		return;
++	}
+ 	if (g_strcmp0 (method_name, "DownloadPackages") == 0) {
+ 		pk_transaction_download_packages (transaction, parameters, invocation);
+ 		return;
+--
+2.53.0
+
