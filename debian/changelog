@@ -1,8 +1,19 @@
-packagekit (1.2.5-2ubuntu2mint1) vera; urgency=medium
+packagekit (1.2.5-2ubuntu3.1) jammy-security; urgency=medium
 
-  * Add 'purge' capability (apt backend only).
+  * SECURITY UPDATE: TOCTOU Race on Transaction Flags (LP: #2148512)
+    - debian/patches/Do-not-allow-re-invoking-methods-on-non-new-txn.patch:
+      do not allow re-invoking methods on non-new transactions in
+      src/pk-transaction.c.
+    - CVE number pending
 
- -- Clement Lefebvre <root@linuxmint.com>  Fri, 16 Sep 2022 13:08:42 +0100
+ -- Marc Deslauriers <marc.deslauriers@ubuntu.com>  Mon, 20 Apr 2026 08:24:54 -0400
+
+packagekit (1.2.5-2ubuntu3) jammy; urgency=medium
+
+  * Backport patch to fix showing the GTK debconf helper on Wayland
+    (LP: #2086773)
+
+ -- Alessandro Astone <alessandro.astone@canonical.com>  Mon, 11 Nov 2024 16:52:43 +0100
 
 packagekit (1.2.5-2ubuntu2) jammy; urgency=medium
 

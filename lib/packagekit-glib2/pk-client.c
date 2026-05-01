@@ -892,8 +892,7 @@ pk_client_signal_package (PkClientState *state,
 	case PK_INFO_ENUM_DOWNLOADING:
 	case PK_INFO_ENUM_UPDATING:
 	case PK_INFO_ENUM_INSTALLING:
-    case PK_INFO_ENUM_REMOVING:
-	case PK_INFO_ENUM_PURGING:
+	case PK_INFO_ENUM_REMOVING:
 	case PK_INFO_ENUM_CLEANUP:
 	case PK_INFO_ENUM_OBSOLETING:
 	case PK_INFO_ENUM_REINSTALLING:
@@ -1875,21 +1874,6 @@ pk_client_set_hints_cb (GObject *source_object,
 		g_object_set (state->results,
 			      "inputs", g_strv_length (state->package_ids),
 			      NULL);
-    } else if (state->role == PK_ROLE_ENUM_PURGE_PACKAGES) {
-        g_dbus_proxy_call (state->proxy, "PurgePackages",
-                   g_variant_new ("(t^a&sbb)",
-                          state->transaction_flags,
-                          state->package_ids,
-                          state->allow_deps,
-                          state->autoremove),
-                   G_DBUS_CALL_FLAGS_NONE,
-                   PK_CLIENT_DBUS_METHOD_TIMEOUT,
-                   state->cancellable,
-                   pk_client_method_cb,
-                   state);
-        g_object_set (state->results,
-                  "inputs", g_strv_length (state->package_ids),
-                  NULL);
 	} else if (state->role == PK_ROLE_ENUM_REFRESH_CACHE) {
 		g_dbus_proxy_call (state->proxy, "RefreshCache",
 				   g_variant_new ("(b)",
@@ -2070,6 +2054,8 @@ pk_client_create_helper_argv_envp (gchar ***argv,
 {
 	const gchar *dialog = NULL;
 	const gchar *display;
+	const gchar *wayland_display;
+	const gchar *xauthority;
 	const gchar *term;
 	gboolean ret;
 	guint envpi = 0;
@@ -2085,7 +2071,7 @@ pk_client_create_helper_argv_envp (gchar ***argv,
 	*argv = g_new0 (gchar *, 2);
 	*argv[0] = g_strdup ("/usr/bin/debconf-communicate");
 
-	*envp_out = g_new0 (gchar *, 8);
+	*envp_out = g_new0 (gchar *, 11);
 	envp = *envp_out;
 	envp[envpi++] = g_strdup ("DEBCONF_DB_REPLACE=configdb");
 	envp[envpi++] = g_strdup ("DEBCONF_DB_OVERRIDE=Pipe{infd:none outfd:none}");
@@ -2103,6 +2089,17 @@ pk_client_create_helper_argv_envp (gchar ***argv,
 	display = g_getenv ("DISPLAY");
 	if (display != NULL) {
 		envp[envpi++] = g_strdup_printf ("DISPLAY=%s", display);
+	}
+	xauthority = g_getenv ("XAUTHORITY");
+	if (xauthority != NULL) {
+		envp[envpi++] = g_strdup_printf ("XAUTHORITY=%s", xauthority);
+	}
+	wayland_display = g_getenv ("WAYLAND_DISPLAY");
+	if (wayland_display != NULL) {
+		envp[envpi++] = g_strdup_printf ("WAYLAND_DISPLAY=%s", wayland_display);
+		envp[envpi++] = g_strdup_printf ("XDG_RUNTIME_DIR=%s", g_get_user_runtime_dir ());
+	}
+	if (display != NULL || wayland_display != NULL) {
 		if (g_strcmp0 (g_getenv ("KDE_FULL_SESSION"), "true") == 0)
 			dialog = "kde";
 		else
@@ -2225,8 +2222,7 @@ pk_client_get_proxy_cb (GObject *object,
 	/* create socket for roles that need interaction */
 	if (state->role == PK_ROLE_ENUM_INSTALL_FILES ||
 	    state->role == PK_ROLE_ENUM_INSTALL_PACKAGES ||
-        state->role == PK_ROLE_ENUM_REMOVE_PACKAGES ||
-	    state->role == PK_ROLE_ENUM_PURGE_PACKAGES ||
+	    state->role == PK_ROLE_ENUM_REMOVE_PACKAGES ||
 	    state->role == PK_ROLE_ENUM_UPDATE_PACKAGES) {
 		hint = pk_client_create_helper_socket (state);
 		if (hint != NULL)
@@ -3368,72 +3364,6 @@ pk_client_remove_packages_async (PkClient *client,
 				  cancellable,
 				  (GAsyncReadyCallback) pk_client_get_tid_cb,
 				  state);
-}
-
-/**
- * pk_client_purge_packages_async:
- * @client: a valid #PkClient instance
- * @transaction_flags: a transaction type bitfield
- * @package_ids: (array zero-terminated=1): a null terminated array of package_id structures such as "hal;0.0.1;i386;fedora"
- * @allow_deps: if other dependent packages are allowed to be removed from the computer
- * @autoremove: if other packages installed at the same time should be tried to remove
- * @cancellable: a #GCancellable or %NULL
- * @progress_callback: (scope notified): the function to run when the progress changes
- * @progress_user_data: data to pass to @progress_callback
- * @callback_ready: the function to run on completion
- * @user_data: the data to pass to @callback_ready
- *
- * Remove a package (optionally with dependancies), as well as any configuration files, from the system.
- * If @allow_deps is set to %FALSE, and other packages would have to be removed,
- * then the transaction would fail.
- *
- * Since: 0.8.1
- **/
-void
-pk_client_purge_packages_async (PkClient *client,
-                 PkBitfield transaction_flags,
-                 gchar **package_ids,
-                 gboolean allow_deps,
-                 gboolean autoremove,
-                 GCancellable *cancellable,
-                 PkProgressCallback progress_callback,
-                 gpointer progress_user_data,
-                 GAsyncReadyCallback callback_ready,
-                 gpointer user_data)
-{
-    PkClientState *state;
-    g_autoptr(GError) error = NULL;
-
-    g_return_if_fail (PK_IS_CLIENT (client));
-    g_return_if_fail (callback_ready != NULL);
-    g_return_if_fail (cancellable == NULL || G_IS_CANCELLABLE (cancellable));
-    g_return_if_fail (package_ids != NULL);
-
-    /* save state */
-    state = pk_client_state_new (client, callback_ready, user_data, pk_client_purge_packages_async, PK_ROLE_ENUM_PURGE_PACKAGES, cancellable);
-    state->transaction_flags = transaction_flags;
-    state->allow_deps = allow_deps;
-    state->autoremove = autoremove;
-    state->package_ids = g_strdupv (package_ids);
-    state->progress_callback = progress_callback;
-    state->progress_user_data = progress_user_data;
-    state->progress = pk_progress_new ();
-
-    /* check not already cancelled */
-    if (cancellable != NULL &&
-        g_cancellable_set_error_if_cancelled (cancellable, &error)) {
-        pk_client_state_finish (state, error);
-        return;
-    }
-
-    /* identify */
-    pk_client_set_role (state, state->role);
-
-    /* get tid */
-    pk_control_get_tid_async (client->priv->control,
-                  cancellable,
-                  (GAsyncReadyCallback) pk_client_get_tid_cb,
-                  state);
 }
 
 /**

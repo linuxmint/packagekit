@@ -484,7 +484,6 @@ string SourcesList::SourceRecord::repoId()
     ret += URI + " ";
     ret += Dist + " ";
     ret += joinedSections();
-
     return ret;
 }
 
